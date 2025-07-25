@@ -41,10 +41,6 @@ En la mayoría de los proyectos universitarios o profesionales en crecimiento, *
 
 Agrupá en base a **módulos funcionales**, no en base a clases del UML.
 
-### 📦 `clientes`
-✦ Cliente  
-✦ PermisoDeAcceso
-
 ### 📦 `vehiculos`
 ✦ Vehiculo  
 ✦ Métodos de mantenimiento predictivo
@@ -62,6 +58,8 @@ Agrupá en base a **módulos funcionales**, no en base a clases del UML.
 ✦ Turnos
 
 ### 📦 `usuarios`
+✦ Cliente  
+✦ PermisoDeAcceso
 ✦ AdministradorTecnico  
 ✦ SuperUsuario  
 ✦ Cualquier futura autenticación/rol
