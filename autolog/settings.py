@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+
     'ordenes',
-    'presupuestos'
+    #'presupuestos'
     'talleres',
+    'vehiculos',
     'usuarios'
-    'vehiculos'
 ]
 
 MIDDLEWARE = [
@@ -126,3 +128,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Especifico a Django que el modelo de usuario que voy a usar no es el que viene por defecto
+AUTH_USER_MODEL = 'usuarios.Usuario'
