@@ -12,7 +12,7 @@ class Vehiculo {
   + calcularKmProxService(): Integer
 }
 
-class Cliente {
+class Usuario {
   - nombre: String
   - apellido: String
   - telefono: String
@@ -35,10 +35,11 @@ class Taller {
   - direccion: String
  
 }
-
+class Cliente {
+  + otorgarPermisoDeAcceso()
+}
 class AdministradorTecnico {
-    - usuario: String
-    - contrasenia: String
+    
     
     + crearOT()
     + crearCliente()
@@ -88,8 +89,13 @@ class Turno {
 }
 
 ' Relaciones
+Usuario <|-- Cliente
+Usuario <|-- AdministradorTecnico
 Cliente "1" <--> "0..*" Vehiculo : vehiculosPropios >
 Cliente "1" --> "0..*" PermisoDeAcceso : clienteAutorizado >
+
+AdministradorTecnico <|-- SuperUsuario
+
 Vehiculo "1" --> "0..*" OrdenDeTrabajo : historial >
 
 OrdenDeTrabajo "1" --> "1" AdministradorTecnico : referenteTecnico >
@@ -101,7 +107,8 @@ Taller "1" <--> "0..*" OrdenDeTrabajo : ordenesPropias >
 Taller "1" --> "1" SuperUsuario : superUsuario >
 Taller "1" --> "0..*" AdministradorTecnico : usuario >
 Taller "1" --> "0..*" Agenda : tiene >
-AdministradorTecnico <|-- SuperUsuario
+
+
 PermisoDeAcceso "1" --> "1" Vehiculo : vehiculoAutorizados >
 Taller "1" --> "1" PermisoDeAcceso : tallerAutorizado >
 Agenda "1" --> "0..*" Turno : turnosAsignados >
