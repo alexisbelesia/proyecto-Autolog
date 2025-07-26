@@ -1,0 +1,51 @@
+app-root {
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f2f5;
+}
+.sidebar {
+    background-color: #1a202c;
+    color: #e2e8f0;
+}
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.sidebar-item:hover {
+    background-color: #2d3748;
+}
+.sidebar-item.active {
+    background-color: #2a69ac; /* A more vibrant blue for the active section */
+    font-weight: 600;
+}
+.card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+.button-primary {
+    background-color: #2a69ac;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.button-primary:hover {
+    background-color: #1c4a7e;
+}
+.button-secondary {
+    background-color: #cbd5e0;
+    color: #2d3748;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.button-secondary:hover {
+    background-color: #a0aec0;
+}
