@@ -1,0 +1,118 @@
+@startuml Autolog
+skinparam classAttributeIconSize 0
+
+class Vehiculo {
+  - marca: String
+  - modelo: String
+  - año: Integer
+  - dominio: String
+  
+  
+  + calcularFechaProxService(): Date
+  + calcularKmProxService(): Integer
+}
+
+class Usuario {
+  - nombre: String
+  - apellido: String
+  - telefono: String
+  - mail: String
+  - direccion: String
+}
+
+class OrdenDeTrabajo {
+  
+  - fechaEntrega: Date
+  - kilometraje: Integer
+  - fechaSiguienteServicio: Date
+  - observacionesTecnicas: String
+
+  
+}
+
+class Taller {
+  - telefono: String
+  - direccion: String
+ 
+}
+class Cliente {
+  + otorgarPermisoDeAcceso()
+}
+class AdministradorTecnico {
+    
+    
+    + crearOT()
+    + crearCliente()
+    + crearVehiculo()
+}
+
+class SuperUsuario {
+    + configurarAgenda()
+    + configurarPracticaMantenimiento()
+}
+
+
+class PermisoDeAcceso {
+  - fechaAutorizacion: Date
+  - estado: String
+}
+
+class PracticaMantenimiento {
+  - nombre: String
+  - tipo: String
+  - frecuenciaKm: Integer
+  - frecuenciaTiempo: Integer
+  - instrucciones: String
+}
+
+class Presupuesto {
+  - repuestos: String
+  - precio: Float
+  - vigencia: Date
+  - estado: String
+}
+
+class Agenda {
+  - diasLaborales: List<String>
+  - horarioDesde: Time
+  - horarioHasta: Time
+  - turnosMaximosPorHora: Integer
+
+  + mostrarTurnosAsignados(Fecha, Hora): List<Turno>
+  + mostrarDisponibilidad(Semana): List<Turno>
+}
+
+class Turno {
+  - fechaHora: DateTime
+  - disponible: Boolean
+  - tecnicoAsignado: AdministradorTecnico
+}
+
+' Relaciones
+Usuario <|-- Cliente
+Usuario <|-- AdministradorTecnico
+Cliente "1" <--> "0..*" Vehiculo : vehiculosPropios >
+Cliente "1" --> "0..*" PermisoDeAcceso : clienteAutorizado >
+
+AdministradorTecnico <|-- SuperUsuario
+
+Vehiculo "1" --> "0..*" OrdenDeTrabajo : historial >
+
+OrdenDeTrabajo "1" --> "1" AdministradorTecnico : referenteTecnico >
+OrdenDeTrabajo "1" --> "1" PracticaMantenimiento : practica >
+OrdenDeTrabajo "1" --> "1" Presupuesto : presupuesto >
+OrdenDeTrabajo "1" --> "1" Turno : fecha asignada >
+
+Taller "1" <--> "0..*" OrdenDeTrabajo : ordenesPropias >
+Taller "1" --> "1" SuperUsuario : superUsuario >
+Taller "1" --> "0..*" AdministradorTecnico : usuario >
+Taller "1" --> "0..*" Agenda : tiene >
+
+
+PermisoDeAcceso "1" --> "1" Vehiculo : vehiculoAutorizados >
+Taller "1" --> "1" PermisoDeAcceso : tallerAutorizado >
+Agenda "1" --> "0..*" Turno : turnosAsignados >
+
+Presupuesto "1" --> "0..*" PracticaMantenimiento : contiene
+
+@enduml
