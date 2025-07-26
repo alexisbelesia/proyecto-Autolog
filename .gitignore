@@ -1,19 +1,102 @@
+# =========================
+# 🐍 Python / Django backend
+# =========================
+
 # Entorno virtual
 venv/
 
-# Archivos de configuración de VSCode (opcional)
+# VSCode y otros editores
 .vscode/
+.idea/
 
-# Archivos compilados de Python
+# Archivos compilados
 __pycache__/
 *.py[cod]
 
-# Archivos temporales
-*.log
-*.sqlite3
+# Archivos de migración cacheados (opcional)
+**/migrations/__pycache__/
+**/migrations/*.pyc
 
-# Archivos de base de datos local
+# Archivos de base de datos
+*.sqlite3
 db.sqlite3
 
-# Configuraciones de sistema
-*.DS_Store
+# Archivos de log
+*.log
+
+# Archivos de configuración de entorno
+.env
+*.env
+
+# Archivos temporales / del sistema
+*.bak
+*.tmp
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ===============================
+# 🌐 FRONTEND (Angular / Node)
+# ===============================
+
+# Salidas compiladas
+dist/
+out-tsc/
+tmp/
+bazel-out/
+
+# Dependencias
+node_modules/
+
+# Logs y debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+libpeerconnection.log
+testem.log
+
+# Angular cache
+.angular/cache/
+
+# Coverage
+coverage/
+
+# Archivos de tipado antiguos
+typings/
+
+# Archivos temporales de Sass
+.sass-cache/
+
+# Archivos bloqueados o de lock
+connect.lock
+
+# ===============================
+# 🛠️ IDEs y editores
+# ===============================
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Otros editores
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# VSCode History plugin (opcional)
+.history/
+
+# ===============================
+# 💻 Archivos del sistema
+# ===============================
+.DS_Store
+Thumbs.db
