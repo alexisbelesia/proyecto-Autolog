@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 
     'ordenes',
     #'presupuestos'
-    'talleres',
+    #'talleres',
     'vehiculos',
     'usuarios'
 ]

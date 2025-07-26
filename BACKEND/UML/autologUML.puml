@@ -103,9 +103,9 @@ Cliente "1" --> "0..*" PermisoDeAcceso : clienteAutorizado >
 AdministradorTecnico <|-- SuperUsuario
 
 Vehiculo "1" --> "0..*" OrdenDeTrabajo : historial >
-Vehiculo "1" --> "1" Marca: marca > 
+Vehiculo "0..*" --> "1" Modelo: es modelo > 
 
-Marca "1"--> "0..*" Modelo: modelos>
+Modelo "0..*"--> "1" Marca: marca>
 
 OrdenDeTrabajo "1" --> "1" AdministradorTecnico : referenteTecnico >
 OrdenDeTrabajo "1" --> "1" PracticaMantenimiento : practica >
