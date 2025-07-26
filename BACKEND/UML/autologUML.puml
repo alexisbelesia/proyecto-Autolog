@@ -2,16 +2,22 @@
 skinparam classAttributeIconSize 0
 
 class Vehiculo {
-  - marca: String
-  - modelo: String
   - año: Integer
   - dominio: String
   
   
   + calcularFechaProxService(): Date
   + calcularKmProxService(): Integer
+  + asignarMarca()
+  + asignarModelo()
+}
+class Marca {
+  marca: String
 }
 
+class Modelo {
+  modelo: String
+}
 class Usuario {
   - nombre: String
   - apellido: String
@@ -97,6 +103,9 @@ Cliente "1" --> "0..*" PermisoDeAcceso : clienteAutorizado >
 AdministradorTecnico <|-- SuperUsuario
 
 Vehiculo "1" --> "0..*" OrdenDeTrabajo : historial >
+Vehiculo "1" --> "1" Marca: marca > 
+
+Marca "1"--> "0..*" Modelo: modelos>
 
 OrdenDeTrabajo "1" --> "1" AdministradorTecnico : referenteTecnico >
 OrdenDeTrabajo "1" --> "1" PracticaMantenimiento : practica >
