@@ -13,6 +13,7 @@ class OrdenDeTrabajo(models.Model):
 
     #ESTO NO VA, SOLO PARA PRBAR
     fecha_turno = models.DateField()
+    cliente = models.CharField(max_length=50, null=True)
 
     PREVENTIVO = 'preventivo'
     CORRECTIVO = 'correctivo'

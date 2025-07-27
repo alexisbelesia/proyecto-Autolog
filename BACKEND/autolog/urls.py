@@ -23,4 +23,8 @@ urlpatterns = [
     #Agrego la ruta de la API de usuarios
     path('api/', include('usuarios.urls')),
     path('api/', include('talleres.urls')),
+    
+    path('api/',include('ordenes.urls')),
+    path('api/', include('vehiculos.urls'))
+    
 ]
