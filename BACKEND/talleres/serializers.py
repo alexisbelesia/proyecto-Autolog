@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Taller
+from .models.taller import Taller
 
 class TallerSerializer(serializers.ModelSerializer):
     class Meta:

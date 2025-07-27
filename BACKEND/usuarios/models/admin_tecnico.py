@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from talleres.models import Taller
+from talleres.models.taller import Taller
 
 class AdministradorTecnico(models.Model):
     usuario = models.OneToOneField(

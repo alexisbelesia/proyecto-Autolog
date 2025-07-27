@@ -1,5 +1,7 @@
 from django.db import models
 from dateutil.relativedelta import relativedelta
+from talleres.models.taller import Taller
+
 
 # Create your models here.
 class OrdenDeTrabajo(models.Model):
@@ -22,6 +24,7 @@ class OrdenDeTrabajo(models.Model):
     vehiculo = models.ForeignKey(
         'vehiculos.Vehiculo', on_delete=models.PROTECT, related_name='ordenes'
     )
+    taller = models.ForeignKey(Taller, on_delete=models.PROTECT, related_name='orden_de_trabajo')
     '''
     tecnico = models.ForeignKey(
         'usuarios.AdministradorTecnico', on_delete=models.PROTECT, null=True, related_name='ordenes'

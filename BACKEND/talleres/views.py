@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Taller
+from .models.taller import Taller
 from .serializers import TallerSerializer
 
 class TallerViewSet(viewsets.ModelViewSet):
