@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { VehiculoService } from '../../../services/vehiculo/vehiculo.service'
-import {Vehiculo} from '../../../models/vehiculo/vehiculo.model'
+import { VehiculoService } from '../../services/vehiculo/vehiculo.service'
+import {Vehiculo} from '../../models/vehiculo/vehiculo.model'
 
 import { CommonModule } from '@angular/common';
 
