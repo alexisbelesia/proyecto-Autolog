@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CliInicio } from './cli-inicio';
+import { CliInicio } from './inicio';
 
 describe('CliInicio', () => {
   let component: CliInicio;
