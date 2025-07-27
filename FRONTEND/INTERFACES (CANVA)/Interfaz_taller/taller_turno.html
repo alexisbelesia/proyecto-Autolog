@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Turnos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .sidebar {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .sidebar-item:hover {
+            background-color: #2d3748;
+        }
+        .sidebar-item.active {
+            background-color: #2a69ac; /* A more vibrant blue for the active section */
+            font-weight: 600;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .button-primary {
+            background-color: #2a69ac;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .button-primary:hover {
+            background-color: #1c4a7e;
+        }
+        .button-secondary {
+            background-color: #cbd5e0;
+            color: #2d3748;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .button-secondary:hover {
+            background-color: #a0aec0;
+        }
+        .dropdown-button {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .dropdown-button:hover {
+            border-color: #2a69ac;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr); /* Time column + 7 days */
+            grid-auto-rows: minmax(60px, auto); /* Row height for time slots */
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        .calendar-header-cell {
+            background-color: #f8fafc;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .calendar-time-cell {
+            padding: 0.5rem;
+            text-align: right;
+            font-size: 0.75rem;
+            color: #718096;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px dashed #e2e8f0; /* Dashed line for hourly slots */
+        }
+        .calendar-day-cell {
+            border-bottom: 1px dashed #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            padding: 0.5rem;
+            position: relative;
+        }
+        .calendar-day-cell:last-child {
+            border-right: none;
+        }
+        .calendar-event {
+            background-color: #bee3f8;
+            border-left: 4px solid #3182ce;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            color: #2b6cb0;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+            position: absolute;
+            width: calc(100% - 1rem); /* Subtract padding */
+            left: 0.5rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            line-height: 1.2;
+        }
+        /* Specific event colors */
+        .event-blue {
+            background-color: #bfdbfe; /* Light blue */
+            border-left-color: #3b82f6; /* Blue */
+            color: #1e40af;
+        }
+        .event-green {
+            background-color: #d1fae5; /* Light green */
+            border-left-color: #10b981; /* Green */
+            color: #065f46;
+        }
+        .event-purple {
+            background-color: #e9d5ff; /* Light purple */
+            border-left-color: #8b5cf6; /* Purple */
+            color: #5b21b6;
+        }
+        .event-yellow {
+            background-color: #fefcbf; /* Light yellow */
+            border-left-color: #f59e0b; /* Yellow */
+            color: #b45309;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 p-6 flex flex-col justify-between">
+        <div>
+            <!-- User Profile -->
+            <div class="flex items-center mb-10">
+                <div class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mr-3">
+                    <i class="fas fa-user-tie text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-lg">Taller mecánico</p>
+                    <p class="text-sm text-gray-400">un_taller@gmail.com</p>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav>
+                <ul>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-file-alt mr-3"></i>
+                            <span>Órdenes de trabajo</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-users mr-3"></i>
+                            <span>Clientes</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-car mr-3"></i>
+                            <span>Vehículos</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item active">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>Agenda de turnos</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Configuración</span>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Enero</h1>
+            <img src="Autolog (sin nombre) png.png" alt="Logo Autolog" class="h-24 w-24 object-contain rounded-lg shadow-sm" onerror="this.onerror=null;this.src='Autolog (sin nombre) png.png';">
+        </header>
+
+        <!-- Calendar Controls -->
+        <section class="flex justify-end items-center mb-6 space-x-4">
+            <div class="dropdown-button">
+                <i class="fas fa-user-friends mr-2 text-gray-600"></i>
+                <span>Cambiar</span>
+                <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
+            </div>
+            <select class="dropdown-button w-40">
+                <option>Semanal</option>
+                <option>Diaria</option>
+                <option>Mensual</option>
+                <option>Anual</option>
+            </select>
+        </section>
+
+        <!-- Calendar Grid -->
+        <section class="calendar-grid">
+            <!-- Top-left empty cell -->
+            <div class="calendar-header-cell"></div>
+            <!-- Day Headers -->
+            <div class="calendar-header-cell rounded-tr-lg">Dom 5</div>
+            <div class="calendar-header-cell">Lun 6</div>
+            <div class="calendar-header-cell">Mar 7</div>
+            <div class="calendar-header-cell">Mie 8</div>
+            <div class="calendar-header-cell">Jue 9</div>
+            <div class="calendar-header-cell">Vie 10</div>
+            <div class="calendar-header-cell rounded-tr-lg">Sáb 11</div> 
+
+            <!-- Time Slots and Events -->
+            <!-- Row 7 AM -->
+            <div class="calendar-time-cell">7 AM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 8 AM -->
+            <div class="calendar-time-cell">8 AM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 9 AM -->
+            <div class="calendar-time-cell">9 AM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 10 AM -->
+            <div class="calendar-time-cell">10 AM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell relative">
+                <div class="calendar-event event-blue" style="top: 10px; height: 50px;">
+                    #ORD-2025-004<br>Cambio de aceite de motor
+                </div>
+            </div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell relative">
+                <div class="calendar-event event-green" style="top: 10px; height: 50px;">
+                    #ORD-2025-009<br>Ajuste del freno de mano
+                </div>
+            </div>
+            <div class="calendar-day-cell relative">
+                <div class="calendar-event event-blue" style="top: 10px; height: 50px;">
+                    #ORD-2025-005<br>Cambio de aceite de motor
+                </div>
+            </div>
+            <div class="calendar-day-cell relative">
+                <div class="calendar-event event-yellow" style="top: 10px; height: 50px;">
+                    #ORD-2025-004<br>Chequeo general
+                </div>
+            </div>
+
+            <!-- Row 11 AM -->
+            <div class="calendar-time-cell">11 AM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 12 PM -->
+            <div class="calendar-time-cell">12 PM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 1 PM -->
+            <div class="calendar-time-cell">1 PM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell relative">
+                <div class="calendar-event event-purple" style="top: 10px; height: 70px;">
+                    #ORD-2025-004<br>Cambio de aceite de motor
+                </div>
+            </div>
+            <div class="calendar-day-cell relative">
+                <div class="calendar-event event-purple" style="top: 10px; height: 70px;">
+                    #ORD-2025-004<br>Cambio de filtro de aire
+                </div>
+            </div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 2 PM -->
+            <div class="calendar-time-cell">2 PM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 3 PM -->
+            <div class="calendar-time-cell">3 PM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 4 PM -->
+            <div class="calendar-time-cell">4 PM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 5 PM -->
+            <div class="calendar-time-cell">5 PM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 6 PM -->
+            <div class="calendar-time-cell">6 PM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+
+            <!-- Row 7 PM -->
+            <div class="calendar-time-cell">7 PM</div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+            <div class="calendar-day-cell"></div>
+        </section>
+    </main>
+</body>
+</html>

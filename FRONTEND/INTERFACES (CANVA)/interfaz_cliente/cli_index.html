@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Mis Vehículos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .sidebar {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .sidebar-item:hover {
+            background-color: #2d3748;
+        }
+        .sidebar-item.active {
+            background-color: #2a69ac; /* A more vibrant blue for the active section */
+            font-weight: 600;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .button-primary {
+            background-color: #2a69ac;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .button-primary:hover {
+            background-color: #1c4a7e;
+        }
+        .button-secondary {
+            background-color: #cbd5e0;
+            color: #2d3748;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .button-secondary:hover {
+            background-color: #a0aec0;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 p-6 flex flex-col justify-between">
+        <div>
+            <!-- User Profile -->
+            <div class="flex items-center mb-10">
+                <div class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mr-3">
+                    <i class="fas fa-user text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-lg">Jorge Pérez</p>
+                    <p class="text-sm text-gray-400">jorge_p@gmail.com</p>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav>
+                <ul>
+                    <li class="mb-4">
+                        <div class="sidebar-item active">
+                            <i class="fas fa-home mr-3"></i>
+                            <span>Inicio</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Turnos</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-tools mr-3"></i>
+                            <span>Talleres</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-clock mr-3"></i>
+                            <span>Próximos mantenimientos</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Configuración</span>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Mis Vehículos</h1>
+            <img src="../Autolog (sin nombre) png.png" alt="Logo Autolog" class="h-24 w-24 object-contain rounded-lg shadow-sm" onerror="this.onerror=null;this.src='Autolog (sin nombre) png.png';">
+        </header>
+
+        <!-- Vehicle Cards Section -->
+        <section class="space-y-6">
+            <!-- Vehicle Card Example 1 -->
+            <div class="card p-6 flex flex-col md:flex-row items-center">
+                <!-- Image removed as per user request -->
+                <div class="flex-1 text-center md:text-left">
+                    <h2 class="text-xl font-bold text-gray-900 mb-1">Volkswagen Amarok</h2>
+                    <p class="text-gray-700 mb-4">AB 123 CD</p>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                        <button class="button-secondary">Administrar permisos</button>
+                        <button class="button-primary">Ver historial</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Card Example 2 -->
+            <div class="card p-6 flex flex-col md:flex-row items-center">
+                <!-- Image removed as per user request -->
+                <div class="flex-1 text-center md:text-left">
+                    <h2 class="text-xl font-bold text-gray-900 mb-1">BMW 530i</h2>
+                    <p class="text-gray-700 mb-4">AG 123 CD</p>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                        <button class="button-secondary">Administrar permisos</button>
+                        <button class="button-primary">Ver historial</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Card Example 3 (Add more examples as needed) 
+            <div class="card p-6 flex flex-col md:flex-row items-center">-->
+                <!-- Image removed as per user request 
+                <div class="flex-1 text-center md:text-left">
+                    <h2 class="text-xl font-bold text-gray-900 mb-1">Honda Civic</h2>
+                    <p class="text-gray-700 mb-4">CA 789 GH</p>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                        <button class="button-secondary">Administrar permisos</button>
+                        <button class="button-primary">Ver historial</button>
+                    </div>
+                </div>
+            </div>
+            -->
+        </section>
+    </main>
+</body>
+</html>

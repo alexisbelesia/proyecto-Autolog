@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Próximos Mantenimientos - Turnos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .sidebar {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .sidebar-item:hover {
+            background-color: #2d3748;
+        }
+        .sidebar-item.active {
+            background-color: #2a69ac; /* Un azul más vibrante para la sección activa */
+            font-weight: 600;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .button-primary {
+            background-color: #2a69ac;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .button-primary:hover {
+            background-color: #1c4a7e;
+        }
+        .button-secondary {
+            background-color: #cbd5e0;
+            color: #2d3748;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .button-secondary:hover {
+            background-color: #a0aec0;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .tab-button.active {
+            background-color: #2a69ac;
+            color: white;
+        }
+        .tab-button:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 p-6 flex flex-col justify-between">
+        <div>
+            <!-- User Profile -->
+            <div class="flex items-center mb-10">
+                <div class="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mr-3">
+                    <i class="fas fa-user text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-lg">Jorge Pérez</p>
+                    <p class="text-sm text-gray-400">jorge_p@gmail.com</p>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav>
+                <ul>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-home mr-3"></i>
+                            <span>Inicio</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Turnos</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-tools mr-3"></i>
+                            <span>Talleres</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item active">
+                            <i class="fas fa-clock mr-3"></i>
+                            <span>Próximos mantenimientos</span>
+                        </div>
+                    </li>
+                    <li class="mb-4">
+                        <div class="sidebar-item">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Configuración</span>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Próximos mantenimientos</h1>
+            <img src="Autolog (sin nombre) png.png" alt="Logo Autolog" class="h-24 w-24 object-contain rounded-lg shadow-sm" onerror="this.onerror=null;this.src='Autolog (sin nombre) png.png';">
+        </header>
+
+        <!-- Tabs for Maintenance Sections -->
+        <div class="flex space-x-4 mb-8">
+            <button class="tab-button active" id="turnosTab">
+                Turnos
+            </button>
+            <div class="flex items-center text-gray-500">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+            <button class="tab-button" id="sugeridoTab">
+                Sugerido
+            </button>
+        </div>
+
+        <!-- Future Maintenances Section -->
+        <section id="turnosContent" class="space-y-6">
+            <!-- Maintenance Card Example 1 -->
+            <div class="card p-6 flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div class="flex-1 mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold text-gray-900 mb-2">#ORD-2025-007</h2>
+                    <p class="text-gray-700 mb-1">Vehículo: <span class="font-semibold">Volkswagen Amarok</span></p>
+                    <p class="text-gray-700 mb-4">Dominio: <span class="font-semibold">AB 123 CD</span></p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 ml-4">
+                        <li>Cambio de aceite</li>
+                        <li>Alineación</li>
+                    </ul>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+                        <p><i class="fas fa-dollar-sign mr-2 text-green-600"></i>Presupuesto: <span class="font-semibold">$100.000 AR$</span></p>
+                        <p><i class="fas fa-industry mr-2 text-blue-600"></i>Taller: <span class="font-semibold">Mecánica Plus</span></p>
+                        <p><i class="fas fa-calendar-check mr-2 text-purple-600"></i>Entrega: <span class="font-semibold">10 de julio de 2025</span></p>
+                        <p><i class="fas fa-road mr-2 text-red-600"></i>Odómetro: <span class="font-semibold">85.000 km</span></p>
+                    </div>
+                    <p class="text-gray-700 mt-4"><i class="fas fa-user-circle mr-2 text-gray-500"></i>Referente: <span class="font-semibold">Juan Pérez</span></p>
+                </div>
+                <div class="flex flex-col items-center md:items-end">
+                    <p class="text-gray-700 mb-4"><i class="fas fa-calendar-alt mr-2"></i>7 de julio de 2025, 10:00hs</p>
+                    <button class="button-secondary">Cancelar</button>
+                </div>
+            </div>
+
+            <!-- Maintenance Card Example 2 (Another example of future maintenance) -->
+             <!--
+            <div class="card p-6 flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div class="flex-1 mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold text-gray-900 mb-2">#ORD-2025-008</h2>
+                    <p class="text-gray-700 mb-1">Vehículo: <span class="font-semibold">Ford Ranger</span></p>
+                    <p class="text-gray-700 mb-4">Dominio: <span class="font-semibold">BC 456 EF</span></p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 ml-4">
+                        <li>Revisión de frenos</li>
+                        <li>Cambio de filtros</li>
+                    </ul>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+                        <p><i class="fas fa-dollar-sign mr-2 text-green-600"></i>Presupuesto: <span class="font-semibold">$75.000 AR$</span></p>
+                        <p><i class="fas fa-industry mr-2 text-blue-600"></i>Taller: <span class="font-semibold">Servicio Rápido Auto</span></p>
+                        <p><i class="fas fa-calendar-check mr-2 text-purple-600"></i>Entrega: <span class="font-semibold">20 de julio de 2025</span></p>
+                        <p><i class="fas fa-road mr-2 text-red-600"></i>Odómetro: <span class="font-semibold">70.000 km</span></p>
+                    </div>
+                    <p class="text-gray-700 mt-4"><i class="fas fa-user-circle mr-2 text-gray-500"></i>Referente: <span class="font-semibold">Maria Gómez</span></p>
+                </div>
+                <div class="flex flex-col items-center md:items-end">
+                    <p class="text-gray-700 mb-4"><i class="fas fa-calendar-alt mr-2"></i>15 de julio de 2025, 09:30hs</p>
+                    <button class="button-secondary">Cancelar</button>
+                </div>
+            </div>
+            -->
+        </section>
+
+        <!-- Suggested Maintenances Section (hidden by default) -->
+        <section id="sugeridoContent" class="space-y-6 hidden">
+            <!-- Suggested Maintenance Card Example 1 (Updated) -->
+            <div class="card p-6 flex flex-col items-start bg-blue-100 border-l-4 border-blue-500">
+                <p class="text-blue-800 text-lg font-semibold mb-2">Próximo Mantenimiento Sugerido, lo primero que ocurra:</p>
+                <p class="text-gray-700 mb-1">Vehículo: <span class="font-semibold">BMW 530i</span></p>
+                <p class="text-gray-700 mb-4">Dominio: <span class="font-semibold">AG 123 CD</span></p>
+                <div class="flex items-center text-blue-800 text-xl font-bold">
+                    <i class="far fa-calendar-alt mr-2 text-blue-600"></i>
+                    <span class="mr-6">15 JUL 2025</span>
+                    <i class="fas fa-road mr-2 text-blue-600"></i>
+                    <span>95.000 km</span>
+                </div>
+            </div>
+
+            <!-- Suggested Maintenance Card Example 2 (Updated) -->
+             <!--
+            <div class="card p-6 flex flex-col items-start bg-blue-100 border-l-4 border-blue-500">
+                <p class="text-blue-800 text-lg font-semibold mb-2">Próximo Mantenimiento Sugerido, lo primero que ocurra:</p>
+                <p class="text-gray-700 mb-1">Vehículo: <span class="font-semibold">Honda Civic</span></p>
+                <p class="text-gray-700 mb-4">Dominio: <span class="font-semibold">CA 789 GH</span></p>
+                <div class="flex items-center text-blue-800 text-xl font-bold">
+                    <i class="far fa-calendar-alt mr-2 text-blue-600"></i>
+                    <span class="mr-6">25 AGO 2025</span>
+                    <i class="fas fa-road mr-2 text-blue-600"></i>
+                    <span>60.000 km</span>
+                </div>
+            </div>
+            -->
+        </section>
+    </main>
+
+    <script>
+        // Get references to the tab buttons and content sections
+        const turnosTab = document.getElementById('turnosTab');
+        const sugeridoTab = document.getElementById('sugeridoTab');
+        const turnosContent = document.getElementById('turnosContent');
+        const sugeridoContent = document.getElementById('sugeridoContent');
+
+        // Function to show the "Turnos" section and hide "Sugerido"
+        turnosTab.addEventListener('click', () => {
+            turnosTab.classList.add('active');
+            sugeridoTab.classList.remove('active');
+            turnosContent.classList.remove('hidden');
+            sugeridoContent.classList.add('hidden');
+        });
+
+        // Function to show the "Sugerido" section and hide "Turnos"
+        sugeridoTab.addEventListener('click', () => {
+            sugeridoTab.classList.add('active');
+            turnosTab.classList.remove('active');
+            sugeridoContent.classList.remove('hidden');
+            turnosContent.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
