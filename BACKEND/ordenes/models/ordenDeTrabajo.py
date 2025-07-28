@@ -25,12 +25,12 @@ class OrdenDeTrabajo(models.Model):
     vehiculo = models.ForeignKey(
         'vehiculos.Vehiculo', on_delete=models.PROTECT, related_name='ordenes'
     )
-    taller = models.ForeignKey(Taller, on_delete=models.PROTECT, related_name='orden_de_trabajo')
-    '''
+    taller = models.ForeignKey(Taller, on_delete=models.PROTECT, related_name='orden_de_trabajo', null=True, blank=True)
+    
     tecnico = models.ForeignKey(
         'usuarios.AdministradorTecnico', on_delete=models.PROTECT, null=True, related_name='ordenes'
     )
-    
+    '''
     practica = models.ForeignKey(
         'ordenes.PracticaMantenimiento', on_delete=models.PROTECT, null=True
     )
@@ -43,8 +43,22 @@ class OrdenDeTrabajo(models.Model):
     )'''
 
     def calcular_fecha_siguiente_servicio(self):
-        if self.mantenimiento == 'PREVENTIVO' and self.fecha_turno:
+        if self.mantenimiento == self.PREVENTIVO and self.fecha_turno:
             self.fecha_siguiente_servicio = self.fecha_turno + relativedelta(years=1)
+
+    def calcular_kilometraje_siguiente_servicio(self):
+        if self.mantenimiento == self.PREVENTIVO and self.fecha_turno:
+            self.kilometraje_siguiente_servicio = self.kilometraje + self.vehiculo.intervalo_servicio        
+    
+    def save(self, *args, **kwargs):
+        self.calcular_fecha_siguiente_servicio()
+        self.calcular_kilometraje_siguiente_servicio()
+        
+        self.vehiculo.kilometraje_prox_servicio = self.kilometraje_siguiente_servicio
+        self.vehiculo.fecha_prox_servicio = self.fecha_siguiente_servicio
+        self.vehiculo.save()
+        super().save(*args, **kwargs)
+        
 
     def __str__(self):
         return f"Orden #{self.id} - {self.vehiculo} - {self.fecha_entrega}"
