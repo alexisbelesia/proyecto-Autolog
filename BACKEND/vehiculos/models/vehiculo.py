@@ -23,7 +23,9 @@ class Vehiculo(models.Model):
     def marca(self):
         return self.modelo.marca
     
-    
+    @property
+    def historial(self):
+        return self.ordenes.all().order_by('fecha_turno') 
 
     def __str__(self):
         return f"{self.modelo.marca.nombre} {self.modelo.nombre} {self.año} {self.dominio}"

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Vehiculo, Marca, Modelo
 
-class VehiculoSerializers(serializers.ModelSerializer):
+class VehiculoSerializer(serializers.ModelSerializer):
 
     marca = serializers.SerializerMethodField(), 
     # Este campo no existe directamente en el modelo como atributo o columna de base de datos.
@@ -20,12 +20,12 @@ class VehiculoSerializers(serializers.ModelSerializer):
     def get_marca(self, obj):
         return obj.marca
 
-class ModeloSerializers (serializers.ModelSerializer):
+class ModeloSerializer (serializers.ModelSerializer):
     class Meta:
         model = Modelo
         fields = '__all__'
 
-class MarcaSerializers (serializers.ModelSerializer):
+class MarcaSerializer (serializers.ModelSerializer):
     class Meta:
         model = Marca
         fields = '__all__'

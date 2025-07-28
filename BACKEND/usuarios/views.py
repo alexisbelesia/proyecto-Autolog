@@ -1,46 +1,47 @@
+from datetime import date
 from django.shortcuts import render
-
-# Create your views here.
-
-# users/views.py
-from rest_framework import viewsets, status
-from .models import Usuario
-from .serializers import UsuarioSerializer
-
-#imports de admintecnico
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import AdministradorTecnico
-from .serializers import (
-    AdministradorTecnicoSerializer,
-    ClienteSerializer,
-)
+from rest_framework import viewsets, status
+
+from .models import Usuario,Cliente,AdministradorTecnico
+from .serializers import UsuarioSerializer,ClienteSerializer,AdministradorTecnicoSerializer,PermisoSerializer
+
 from vehiculos.serializers import VehiculoSerializer
 from ordenes.serializers import OrdenDeTrabajoSerializer
 
-
-
-
 # ViewSets define el comportamiento de la vista
 class UsuarioViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
+
     queryset = Usuario.objects.all().order_by('-date_joined')
     serializer_class = UsuarioSerializer
 
+#----cliente
+class clienteViewSet(viewsets.ModelViewSet):
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteSerializer
 
-
-
-
-
+    @action(detail=True, methods=['post'])#permiso de acceso
+    def acceso(self, request, pk=None):
+        serializer = PermisoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        data_request = serializer.validated_data
+        fecha = date.today()
+        cliente = self.get_object()
+        data = {
+            'autoriza': cliente,
+            'fecha_autorizacion': fecha,
+             **data_request             }
+        permiso = cliente.crear_permiso(**data)
+        return permiso
 
 #----admintec
 class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     queryset = AdministradorTecnico.objects.all()
     serializer_class = AdministradorTecnicoSerializer
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post']) 
     def crear_cliente(self, request, pk=None):
         tecnico = self.get_object()
         serializer = ClienteSerializer(data=request.data)

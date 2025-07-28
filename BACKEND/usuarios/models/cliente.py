@@ -2,8 +2,9 @@ from datetime import date
 from django.db import models
 
 from usuarios.models.pemisoAcceso import PermisoDeAcceso
+from usuarios.models.usuario import Usuario
 
-class Cliente (models.Model):
+class Cliente (Usuario):
 
     @property
     def talleres_autorizados(self):
