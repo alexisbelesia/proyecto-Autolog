@@ -1,6 +1,7 @@
 # users/serializers.py
 from rest_framework import serializers
 from .models import Usuario
+from .models import AdministradorTecnico
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +19,28 @@ class UsuarioSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
         instance = self.Meta.model(**validated_data)
         if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
+    
+class AdministradorTecnicoSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)  # <-- acá indicás que sea solo escriturapassword = serializers.CharField(write_only=True)  # <-- acá indicás que sea solo escritura
+    class Meta:
+        model = AdministradorTecnico
+        fields = '__all__'
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        tecnico = AdministradorTecnico(**validated_data)
+        tecnico.set_password(password)
+        tecnico.save()
+        return tecnico
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
             instance.set_password(password)
         instance.save()
         return instance

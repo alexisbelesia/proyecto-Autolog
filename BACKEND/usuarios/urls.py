@@ -6,6 +6,7 @@ from .views import UsuarioViewSet
 # Creamos un router y registramos nuestro viewset
 router = DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)
+router.register(r'tecnicos', AdministradorTecnicoViewSet)
 
 # Las URLs de la API son determinadas automáticamente por el router
 urlpatterns = [
