@@ -1,0 +1,55 @@
+<ul *ngIf="userType() === 'cliente'">
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/cliente" routerLinkActive="active">
+            <i class="fas fa-home mr-3"></i><span>Inicio</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/cliente/turnos" routerLinkActive="active">
+            <i class="fas fa-calendar-alt mr-3"></i><span>Turnos</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/cliente/talleres" routerLinkActive="active">
+            <i class="fas fa-tools mr-3"></i><span>Talleres</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/cliente/pm" routerLinkActive="active">
+            <i class="fas fa-clock mr-3"></i><span>Próximos mantenimientos</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/cliente/config" routerLinkActive="active">
+            <i class="fas fa-cog mr-3"></i><span>Configuración</span>
+        </a>
+    </li>
+</ul>
+
+<ul *ngIf="userType() === 'taller'">
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/taller/ordenes" routerLinkActive="active">
+            <i class="fas fa-file-alt mr-3"></i><span>Órdenes de trabajo</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/taller/clientes" routerLinkActive="active">
+            <i class="fas fa-users mr-3"></i><span>Clientes</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/taller/vehiculos" routerLinkActive="active">
+            <i class="fas fa-car mr-3"></i><span>Vehículos</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/taller/turnos" routerLinkActive="active">
+            <i class="fas fa-calendar-check mr-3"></i><span>Agenda de turnos</span>
+        </a>
+    </li>
+    <li class="mb-4">
+        <a class="sidebar-item" routerLink="/taller/config" routerLinkActive="active">
+            <i class="fas fa-cog mr-3"></i><span>Configuración</span>
+        </a>
+    </li>
+</ul>
