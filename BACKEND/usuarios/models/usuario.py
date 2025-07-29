@@ -31,7 +31,7 @@ class Usuario(AbstractUser):
     #Relacionados
     
     @property
-    def vehiculos(self):
+    def mis_vehiculos(self):
         return self.vehiculos.all()
     
     @property

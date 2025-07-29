@@ -27,14 +27,10 @@ class clienteViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         
         data_request = serializer.validated_data
-        fecha = date.today()
+        #print(data_request)
         cliente = self.get_object()
-        data = {
-            'autoriza': cliente,
-            'fecha_autorizacion': fecha,
-             **data_request             }
-        permiso = cliente.crear_permiso(**data)
-        return permiso
+        permiso = cliente.crear_permiso(**data_request)
+        return Response(PermisoSerializer(permiso).data, status=status.HTTP_201_CREATED)
 
 #----admintec
 class AdministradorTecnicoViewSet(viewsets.ModelViewSet):

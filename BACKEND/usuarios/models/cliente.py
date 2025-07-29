@@ -11,28 +11,29 @@ class Cliente (Usuario):
 
     @property
     def talleres_autorizados(self):
-        return [permiso.taller_autorizado for permiso in self.permiso_de_acceso.all()]
+        return [permiso.taller_autorizado for permiso in self.permiso_que_otorgo.all()]
     
     @property
     def usuarios_autorizados(self):
-        return [permiso.usuario_autorizado for permiso in self.permiso_de_acceso.all()]
+        return [permiso.usuario_autorizado for permiso in self.permiso_que_otorgo.all()]
     
-    def crear_permiso(self, vehiculo, usuario_autorizado=None, taller_autorizado=None, fecha_autorizacion=None):
+    def crear_permiso(self, vehiculo_autorizado, usuario_autorizado=None, taller_autorizado=None):
         
-        if vehiculo.propietario != self:
+        if vehiculo_autorizado.propietario_id != self.id:
+            print(f"{self} vs {vehiculo_autorizado.propietario}")
             raise ValueError("No se puede otorgar permiso para un vehículo que no te pertenece.")
         
         if not usuario_autorizado and not taller_autorizado:
             raise ValueError("Debe autorizar a un taller o a un usuario.")
         
-        if PermisoDeAcceso.objects.filter(vehiculo=vehiculo, usuario_autorizado=usuario_autorizado,   taller_autorizado=taller_autorizado).exists():
+        if PermisoDeAcceso.objects.filter(vehiculo_autorizado = vehiculo_autorizado, usuario_autorizado=usuario_autorizado,   taller_autorizado=taller_autorizado).exists():
             raise ValueError("Ya existe un permiso igual.")
 
         permiso = PermisoDeAcceso.objects.create(
-            vehiculo=vehiculo,
+            vehiculo_autorizado = vehiculo_autorizado,
             autoriza=self,
             usuario_autorizado=usuario_autorizado,
             taller_autorizado=taller_autorizado,
-            fecha_autorizacion=fecha_autorizacion or date.today()
+            fecha_autorizacion=date.today()
         )
         return permiso
