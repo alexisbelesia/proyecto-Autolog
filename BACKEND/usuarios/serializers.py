@@ -1,7 +1,10 @@
 # users/serializers.py
 from rest_framework import serializers
-from .models import Usuario,AdministradorTecnico, Cliente, PermisoDeAcceso
 
+from talleres.serializers import TallerSerializer
+from vehiculos.serializers import VehiculoSerializer
+from .models import Usuario,AdministradorTecnico, Cliente, PermisoDeAcceso
+from talleres.models.taller import Taller
 
 class UsuarioSerializer(serializers.ModelSerializer):
     mis_vehiculos = VehiculoSerializer(many=True, read_only=True)
