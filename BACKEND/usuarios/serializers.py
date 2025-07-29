@@ -1,6 +1,7 @@
 # users/serializers.py
 from rest_framework import serializers
 from .models import Usuario,AdministradorTecnico, Cliente, PermisoDeAcceso
+from talleres.models.taller import Taller
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -47,27 +48,12 @@ class ClienteSerializer(UsuarioSerializer):
 
 
 ###############Heredar UsuarioSerializer############################3
-class AdministradorTecnicoSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)  # <-- acá indicás que sea solo escriturapassword = serializers.CharField(write_only=True)  # <-- acá indicás que sea solo escritura
-    class Meta:
+class AdministradorTecnicoSerializer(UsuarioSerializer):
+    taller = serializers.PrimaryKeyRelatedField(queryset=Taller.objects.all())
+
+    class Meta(UsuarioSerializer.Meta):
         model = AdministradorTecnico
-        fields = '__all__'
-
-    def create(self, validated_data):
-        password = validated_data.pop('password')
-        tecnico = AdministradorTecnico(**validated_data)
-        tecnico.set_password(password)#que pasa si viene vacio el password?, ojo no podemos ponerlo como obligatorio en la redefinicion del campo del modelo porque despues necesitamos hacer el hash
-        tecnico.save()
-        return tecnico
-
-    def update(self, instance, validated_data):
-        password = validated_data.pop('password', None)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        if password:
-            instance.set_password(password)
-        instance.save()
-        return instance
+        fields = UsuarioSerializer.Meta.fields + ['taller']
     
 class PermisoSerializer(serializers.ModelSerializer):
     class Meta:

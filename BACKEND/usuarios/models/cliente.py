@@ -4,7 +4,10 @@ from django.db import models
 from usuarios.models.pemisoAcceso import PermisoDeAcceso
 from usuarios.models.usuario import Usuario
 
+from django.contrib.auth.models import UserManager
+
 class Cliente (Usuario):
+    objects = UserManager()  # Esto es necesario
 
     @property
     def talleres_autorizados(self):

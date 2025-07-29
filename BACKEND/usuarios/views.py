@@ -41,17 +41,22 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     queryset = AdministradorTecnico.objects.all()
     serializer_class = AdministradorTecnicoSerializer
 
-    @action(detail=True, methods=['post']) 
+    @action(detail=True, methods=['post'])
     def crear_cliente(self, request, pk=None):
         tecnico = self.get_object()
         serializer = ClienteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
         cliente = tecnico.crear_cliente(
-            username=serializer.validated_data['username'],
-            email=serializer.validated_data['email'],
-            password=serializer.validated_data['password'],
-            nombre=serializer.validated_data['nombre'],
-            telefono=serializer.validated_data['telefono'],
+            username=data['username'],
+            email=data['email'],
+            password=data['password'],
+            first_name=data.get('first_name', ''),
+            last_name=data.get('last_name', ''),
+            dni=data.get('dni'),
+            telefono=data.get('telefono', ''),
+            direccion=data.get('direccion', ''),
         )
         return Response(ClienteSerializer(cliente).data, status=status.HTTP_201_CREATED)
 

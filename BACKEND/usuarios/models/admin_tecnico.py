@@ -2,21 +2,28 @@ from django.db import models
 from talleres.models.taller import Taller
 from .usuario import Usuario
 
-class AdministradorTecnico(Usuario):  # Hereda de Usuario
-    taller = models.ForeignKey(Taller, on_delete=models.CASCADE)
+class AdministradorTecnico(Usuario):  # Hereda de Usuario (que ya hereda de AbstractUser)
+    taller = models.ForeignKey(Taller, on_delete=models.CASCADE, related_name='tecnicos')
+    
+    class Meta:
+        verbose_name = "Administrador Técnico"
+        verbose_name_plural = "Administradores Técnicos"
 
     def __str__(self):
-        return f"{self.nombre} (Técnico)"
+        return f"{self.username} (Técnico en {self.taller.nombre})"
     
     #creás solo un objeto Cliente con todos los campos requeridos (incluidos los de Usuario).
-    def crear_cliente(self, username, email, password, nombre, telefono):
+    def crear_cliente(self, username, email, password, first_name, last_name=None, dni=None, telefono=None, direccion=None):
         from .cliente import Cliente
         cliente = Cliente.objects.create_user( #El password queda hasheado correctamente y podés usar el sistema de autenticación de Django.
-            username=username, #a definir
+            username=username,
             email=email,
             password=password,
-            nombre=nombre,
-            telefono=telefono
+            first_name=first_name,
+            last_name=last_name or '',
+            dni=dni,
+            telefono=telefono or '',
+            direccion=direccion or '',
         )
         return cliente
 
@@ -38,7 +45,6 @@ class AdministradorTecnico(Usuario):  # Hereda de Usuario
             raise ValueError(f"Tipo de mantenimiento inválido: {mantenimiento}. Debe ser 'preventivo' o 'correctivo'.")
 
         orden = OrdenDeTrabajo.objects.create(
-            #NO ESTA SOCIADA A UN CLIENTE NO?
             vehiculo=vehiculo,
             tecnico=self,
             taller=self.taller,
