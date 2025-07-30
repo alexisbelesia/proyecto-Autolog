@@ -1,17 +1,13 @@
 from rest_framework import serializers
 from .models import Vehiculo, Marca, Modelo
+from ordenes.serializers import OrdenDeTrabajoSerializer 
 
 class VehiculoSerializer(serializers.ModelSerializer):
 
     marca = serializers.SerializerMethodField(), 
-    # Este campo no existe directamente en el modelo como atributo o columna de base de datos.
-    # Es un campo de modelo, y modelo si es fk en vehiculo
-    # Al usar serializers.SerializerMethodField(), DRF buscará un método llamado get_marca(self, obj)
-    # para obtener su valor durante la serialización.
-    # El parámetro obj es una instancia del modelo Vehiculo (el que se está serializando).
-    # En este caso, el valor se obtiene a través de la propiedad @property marca definida en el modelo Vehiculo,
-    # que retorna self.modelo.marca (es decir, accede a un campo relacionado).
-    
+    fecha_prox_servicio = serializers.DateField(read_only=True)
+    kilometraje_prox_servicio = serializers.IntegerField(read_only=True)
+    historial = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Vehiculo
@@ -19,7 +15,11 @@ class VehiculoSerializer(serializers.ModelSerializer):
     
     def get_marca(self, obj):
         return obj.marca
-
+    
+    def get_historial(self, obj):
+        historial = obj.historial
+        return OrdenDeTrabajoSerializer(historial, many=True).data
+    
 class ModeloSerializer (serializers.ModelSerializer):
     class Meta:
         model = Modelo

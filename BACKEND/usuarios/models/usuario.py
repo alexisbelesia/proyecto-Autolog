@@ -27,22 +27,6 @@ class Usuario(AbstractUser):
     dni = models.CharField(max_length=10, null=True, unique=True)
     telefono = models.CharField(max_length=20, blank=True)
     direccion = models.TextField(blank=True)
-
-    #Relacionados
-    
-    @property
-    def mis_vehiculos(self):
-        return self.vehiculos.all()
-    
-    @property
-    def permisos_de_acceso(self):
-        return self.permiso_de_acceso.all()
-    
-
-    def save(self, *args, **kwargs):
-        # Asignamos el rol por defecto si no se especifica uno
-        
-        return super().save(*args, **kwargs)
-    
+ 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.pk}"

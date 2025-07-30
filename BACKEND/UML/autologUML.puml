@@ -91,9 +91,9 @@ class Agenda {
 
 
 ' Relaciones
-Usuario <|-- Cliente
-Usuario <|-- AdministradorTecnico
-Cliente "1" <--> "0..*" Vehiculo : vehiculosPropios >
+Cliente "1"--> "1*" Usuario
+AdministradorTecnico "1"--> "1*" Usuario
+Cliente "1" --> "0..*" Vehiculo : vehiculosPropios >
 Cliente "1" --> "0..*" PermisoDeAcceso : clienteAutorizado >
 
 AdministradorTecnico <|-- SuperUsuario

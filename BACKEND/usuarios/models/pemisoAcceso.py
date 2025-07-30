@@ -8,7 +8,7 @@ class PermisoDeAcceso(models.Model):
 
     autoriza = models.ForeignKey('usuarios.Cliente', on_delete=models.PROTECT, related_name='permiso_que_otorgo')
     
-    usuario_autorizado = models.ForeignKey('usuarios.Usuario', on_delete=models.PROTECT, blank=True, null=True, related_name='permiso_que_recibi')
+    cliente_autorizado = models.ForeignKey('usuarios.Cliente', on_delete=models.PROTECT, blank=True, null=True, related_name='permiso_que_recibi')
 
     taller_autorizado = models.ForeignKey('talleres.Taller', on_delete=models.PROTECT, blank=True, null=True, related_name='permiso_de_acceso')
 

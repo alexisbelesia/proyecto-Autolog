@@ -7,16 +7,14 @@ from .models import Usuario,AdministradorTecnico, Cliente, PermisoDeAcceso
 from talleres.models.taller import Taller
 
 class UsuarioSerializer(serializers.ModelSerializer):
-    mis_vehiculos = VehiculoSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Usuario
-        fields = ['pk','username','first_name','last_name','email','password','dni','telefono','direccion','mis_vehiculos']    
+        fields = ['pk','username','first_name','last_name','email','password','dni','telefono','direccion']    
        
         extra_kwargs = {
             'password': {'write_only': True} # La contraseña no debe ser visible al pedir datos
-        }
-    def get_mis_vehiculos(self,obj):
-            return obj.mis_vehiculos  
+        } 
 
     def create(self, validated_data):
         # Este método se asegura de que la contraseña se guarde de forma segura (hasheada)
@@ -35,28 +33,33 @@ class UsuarioSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
-    
-class ClienteSerializer(UsuarioSerializer): 
-    usuarios_autorizados = serializers.SerializerMethodField()
-    talleres_autorizados = serializers.SerializerMethodField()
 
-    class Meta(UsuarioSerializer.Meta):
+class PermisoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PermisoDeAcceso
+        fields = ['vehiculo_autorizado','usuario_autorizado', 'taller_autorizado']
+            
+class ClienteSerializer(serializers.ModelSerializer):
+    
+    #usuario_id = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), write_only=True)
+    usuario = UsuarioSerializer()
+    mis_vehiculos = VehiculoSerializer(many=True, read_only=True)
+    permisos_que_otorgo = PermisoSerializer(many=True, read_only=True)
+    #vehiculo_autorizado = VehiculoSerializer(many=True)
+    #usuarios_autorizados = serializers.SerializerMethodField()
+    #talleres_autorizados = serializers.SerializerMethodField()
+
+    class Meta():
         model = Cliente
-        fields =(UsuarioSerializer.Meta.fields)+['usuarios_autorizados','talleres_autorizados']
+        fields =['usuario','permisos_que_otorgo','mis_vehiculos']
     
-    def get_usuarios_autorizados(self, obj):
-        usuarios = obj.usuarios_autorizados
-        usuarios = [u for u in usuarios if u is not None]
-        return UsuarioSerializer(usuarios,many=True).data
-    
-    def get_talleres_autorizados(self, obj):
-        talleres =  obj.talleres_autorizados
-        talleres = [t for t in talleres if t is not None]
-        return TallerSerializer(talleres, many=True).data
+    def create(self, validated_date):
+        usuario_data = validated_date.pop('usuario')
+        usuario = Usuario.objects.create(**usuario_data)
+        cliente = Cliente.objects.create(usuario=usuario , **validated_date)
+        return cliente
 
 
-
-###############Heredar UsuarioSerializer############################3
 class AdministradorTecnicoSerializer(UsuarioSerializer):
     taller = serializers.PrimaryKeyRelatedField(queryset=Taller.objects.all())
 
@@ -64,8 +67,3 @@ class AdministradorTecnicoSerializer(UsuarioSerializer):
         model = AdministradorTecnico
         fields = UsuarioSerializer.Meta.fields + ['taller']
     
-class PermisoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PermisoDeAcceso
-        fields = ['vehiculo_autorizado','usuario_autorizado', 'taller_autorizado']
-        

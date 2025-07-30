@@ -3,7 +3,7 @@ from .views import VehiculoViewSet, MarcaViewSet, ModeloViewset
 
 
 router = DefaultRouter()
-router.register('vehiculos', VehiculoViewSet)
+router.register('vehiculo', VehiculoViewSet)
 router.register('marca', MarcaViewSet)
 router.register('modelo', ModeloViewset)
 
