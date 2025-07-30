@@ -28,6 +28,7 @@ class Usuario {
 
 class OrdenDeTrabajo {
   
+  - fechaTurno : Date
   - fechaEntrega: Date
   - kilometraje: Integer
   - fechaSiguienteServicio: Date
@@ -88,11 +89,6 @@ class Agenda {
   + mostrarDisponibilidad(Semana): List<Turno>
 }
 
-class Turno {
-  - fechaHora: DateTime
-  - disponible: Boolean
-  - tecnicoAsignado: AdministradorTecnico
-}
 
 ' Relaciones
 Usuario <|-- Cliente
@@ -110,17 +106,17 @@ Modelo "0..*"--> "1" Marca: marca>
 OrdenDeTrabajo "1" --> "1" AdministradorTecnico : referenteTecnico >
 OrdenDeTrabajo "1" --> "1" PracticaMantenimiento : practica >
 OrdenDeTrabajo "1" --> "1" Presupuesto : presupuesto >
-OrdenDeTrabajo "1" --> "1" Turno : fecha asignada >
 
 Taller "1" <--> "0..*" OrdenDeTrabajo : ordenesPropias >
 Taller "1" --> "1" SuperUsuario : superUsuario >
 Taller "1" --> "0..*" AdministradorTecnico : usuario >
-Taller "1" --> "0..*" Agenda : tiene >
+Taller "1" --> "1" Agenda : tiene >
 
 
 PermisoDeAcceso "1" --> "1" Vehiculo : vehiculoAutorizados >
 Taller "1" --> "1" PermisoDeAcceso : tallerAutorizado >
-Agenda "1" --> "0..*" Turno : turnosAsignados >
+
+Agenda "1" --> "0..*" OrdenDeTrabajo : fecha asignada >
 
 Presupuesto "1" --> "0..*" PracticaMantenimiento : contiene
 

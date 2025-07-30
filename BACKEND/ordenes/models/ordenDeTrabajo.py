@@ -38,8 +38,8 @@ class OrdenDeTrabajo(models.Model):
     presupuesto = models.OneToOneField(
         'presupuesto.Presupuesto', on_delete=models.PROTECT, null=True
     )
-    fecha_turno = models.ForeignKey(
-        'agenda.Turno', on_delete=models.SET_NULL, null=True
+    turno = models.ForeignKey(
+        'agendas.Agenda', on_delete=models.SET_NULL, null=True, related_name='ordenes'
     )'''
 
     def calcular_fecha_siguiente_servicio(self):

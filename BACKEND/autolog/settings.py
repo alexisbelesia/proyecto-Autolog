@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     #'presupuestos'
     'talleres',
     'vehiculos',
-    'usuarios'
+    'usuarios',
+    'agendas'
     
     
 ]
