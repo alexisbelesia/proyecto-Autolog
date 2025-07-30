@@ -60,10 +60,32 @@ class ClienteSerializer(serializers.ModelSerializer):
         return cliente
 
 
-class AdministradorTecnicoSerializer(UsuarioSerializer):
+class AdministradorTecnicoSerializer(serializers.ModelSerializer):
+    usuario = UsuarioSerializer()
     taller = serializers.PrimaryKeyRelatedField(queryset=Taller.objects.all())
-
-    class Meta(UsuarioSerializer.Meta):
+    class Meta:
         model = AdministradorTecnico
-        fields = UsuarioSerializer.Meta.fields + ['taller']
+        fields = ['id', 'usuario', 'taller']
     
+    #Tu serializer tiene usuario = UsuarioSerializer(), pero por defecto Django REST Framework no crea automáticamente el usuario interno cuando hacés un POST, a menos que vos sobreescribas el método create.
+    def create(self, validated_data):
+        usuario_data = validated_data.pop('usuario')  # saca los datos del usuario
+        usuario = Usuario.objects.create_user(**usuario_data)  # crea el usuario con password hasheada
+        tecnico = AdministradorTecnico.objects.create(usuario=usuario, **validated_data) #Crea el AdministradorTecnico, relacionándolo con ese usuario y con el taller extraído.
+        return tecnico
+    def update(self, instance, validated_data):
+        usuario_data = validated_data.pop('usuario', None)
+        taller = validated_data.get('taller')
+        # actualizar usuario si se mandaron datos nuevos
+        if usuario_data:
+            for attr, value in usuario_data.items():
+                if attr == 'password':
+                    instance.usuario.set_password(value)
+                else:
+                    setattr(instance.usuario, attr, value)
+            instance.usuario.save()
+        # actualizar taller si fue modificado
+        if taller:
+            instance.taller = taller
+            instance.save()
+        return instance
