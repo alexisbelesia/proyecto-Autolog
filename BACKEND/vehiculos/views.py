@@ -9,7 +9,8 @@ class VehiculoViewSet(viewsets.ModelViewSet):
     serializer_class = VehiculoSerializer
 
     def get_queryset(self):
-        tecnico = self.request.user.tecnico
+        tecnico = self.get_object()
+        #tecnico = self.request.user.tecnico
         # Aquí filtrás para que solo vea vehículos de clientes de su taller
         return Vehiculo.objects.filter(cliente__usuario__tecnico=tecnico)
 

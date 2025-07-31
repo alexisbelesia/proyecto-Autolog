@@ -2,7 +2,7 @@ from datetime import date
 from django.shortcuts import render
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.exceptions import PermissionDenied
 
 from .models import Usuario,Cliente,AdministradorTecnico
@@ -10,6 +10,7 @@ from .serializers import UsuarioSerializer,ClienteSerializer,AdministradorTecnic
 
 from vehiculos.serializers import VehiculoSerializer
 from ordenes.serializers import OrdenDeTrabajoSerializer
+from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
 
 # ViewSets define el comportamiento de la vista
 class UsuarioViewSet(viewsets.ModelViewSet):
@@ -99,10 +100,14 @@ class clienteViewSet(viewsets.ModelViewSet):
 class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     queryset = AdministradorTecnico.objects.all()
     serializer_class = AdministradorTecnicoSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny] # 👈 acceso público por ahora para probar
     def get_queryset(self):
-        # El técnico solo puede acceder a su propio perfil (objeto AdministradorTecnico)
-        return AdministradorTecnico.objects.filter(usuario=self.request.user)
+         # El técnico solo puede acceder a su propio perfil (objeto AdministradorTecnico)
+        if self.request.user.is_authenticated:
+            return AdministradorTecnico.objects.filter(usuario=self.request.user)
+        return AdministradorTecnico.objects.all()  # acceso abierto temporalmente
+    
+
     #crud OT desde tecnico (faltaria que puedar leer OT de otros talleres)
     @action(detail=True, methods=["get"])
     def ordenes(self, request, pk=None):
