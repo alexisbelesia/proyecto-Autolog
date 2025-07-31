@@ -2,7 +2,8 @@ from datetime import date
 from django.shortcuts import render
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status
+from rest_framework.exceptions import PermissionDenied
 
 from .models import Usuario,Cliente,AdministradorTecnico
 from .serializers import UsuarioSerializer,ClienteSerializer,AdministradorTecnicoSerializer,PermisoSerializer
@@ -21,7 +22,8 @@ class clienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
 
-    @action(detail=True, methods=['post'])#permiso de acceso
+    #crear permiso de acceso
+    @action(detail=True, methods=['post'])
     def acceso(self, request, pk=None):
         serializer = PermisoSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -31,6 +33,67 @@ class clienteViewSet(viewsets.ModelViewSet):
         cliente = self.get_object()
         permiso = cliente.crear_permiso(**data_request)
         return Response(PermisoSerializer(permiso).data, status=status.HTTP_201_CREATED)
+
+    #ver historial
+    @action(detail=True, methods = ['get'])
+    def historial(self, request, pk=None):
+        cliente = self.get_object()
+        vehiculo_id = request.query_params.get('vehiculo_id')
+
+        if not vehiculo_id:
+            return Response({'error': 'vehiculo_id es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            vehiculo = Vehiculo.objects.get(pk=vehiculo_id)
+        except Vehiculo.DoesNotExist:
+            return Response({'error': 'vehiculo no encontrado'},status=status.HTTP_404_NOT_FOUND)
+        
+    
+        if cliente.tiene_permiso(vehiculo):
+
+            historial = vehiculo.historial
+            serializer = OrdenDeTrabajoSerializer(historial,many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:    
+            return Response({'mensaje':'no tenes permiso para ver este historial de vehiculo'}, status=status.HTTP_404_NOT_FOUND)
+    
+    #vehiculos del cliente
+    @action(detail=True, methods=['get'])
+    def vehiculos(self,request, pk=None):
+        cliente = self.get_object()
+        vehiculos = cliente.mis_vehiculos
+        if not vehiculos.exists():
+            return Response({'mensaje':'usted no tiene vehiculos asociados'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = VehiculoSerializer(vehiculos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    #proximo service un vehiculo
+    @action(detail=True, methods=['get'])
+    def service (self,request,pk=None):
+        cliente = self.get_object()
+        vehiculo_id = request.query_params.get('vehiculo_id')
+        
+        
+        try:
+            vehiculo = Vehiculo.objects.get(pk=vehiculo_id)
+        except Vehiculo.DoesNotExist:
+            return Response({'mensaje': 'vehiculo no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if not cliente.tiene_permiso(vehiculo):
+            return Response({"mensaje": "No tenés permiso para ese vehículo"},status=status.HTTP_403_FORBIDDEN) 
+        
+        fecha = vehiculo.fecha_prox_servicio
+        kilometraje = vehiculo.kilometraje_prox_servicio
+        
+        if not fecha or not kilometraje:
+            return Response({'mensaje':'vehiculo sin proximo servicio estimado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        return Response({
+            'fecha_prox_servicio': fecha,
+            'kilometraje_prox_servicio': kilometraje
+        },status=status.HTTP_200_OK)
+          
+            
+
 
 #----admintec
 class AdministradorTecnicoViewSet(viewsets.ModelViewSet):

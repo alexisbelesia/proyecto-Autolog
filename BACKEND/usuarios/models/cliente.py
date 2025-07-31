@@ -25,14 +25,28 @@ class Cliente (models.Model):
     # FIN PERMISOS QUE OTORGA
     
     @property
+    def permisos_otorgados(self):
+        return self.permisos_que_otorgo.all()
+    
+    @property
+    def permisos_recibidos(self):
+        return self.permisos_que_recibi.all()
+
+    @property
     def mis_vehiculos(self):
         return self.vehiculos.all()
     
     @property
-    def permisos_de_acceso(self):
-        return self.permiso.all()
+    def vehiculos_autorizados(self):
+        permisos = self.permisos_recibidos
+        vehiculos = [permiso.vehiculo_autorizado for permiso in permisos]
+        return vehiculos
     
-    # metodos
+    def tiene_permiso(self,vehiculo):
+        return ((vehiculo.id in self.mis_vehiculos.values_list('id', flat=True)) or (vehiculo.id in self.vehiculos_autorizados.values_list('id', flat = True)))
+        
+    
+    #crea perimiso
     def crear_permiso(self, vehiculo_autorizado, usuario_autorizado=None, taller_autorizado=None):
         
         if vehiculo_autorizado.propietario_id != self.id:
