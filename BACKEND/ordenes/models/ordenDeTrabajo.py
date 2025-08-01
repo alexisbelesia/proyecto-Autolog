@@ -7,9 +7,9 @@ from talleres.models.taller import Taller
 class OrdenDeTrabajo(models.Model):
 
     #TURNO
-    agenda = models.ForeignKey('agendas.Agenda', on_delete=models.SET_NULL, null=True, related_name='ordenes')
+    agenda = models.ForeignKey('agendas.Agenda', on_delete=models.SET_NULL, null=True, related_name='ordenes_de_trabajo')
     fecha_turno = models.DateTimeField()
-    #fecha_entrega_estimada = models.DateField(null=True)
+    fecha_entrega = models.DateField(null=True)
     #la fecha de entrega la vamos a estimar segun la practica de mantenimienro
 
     kilometraje = models.PositiveIntegerField(default = 0)
