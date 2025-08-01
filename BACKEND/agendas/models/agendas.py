@@ -108,7 +108,7 @@ class Agenda(models.Model):
         Devuelve un listado de todas las órdenes de trabajo (turnos)
         asignadas a esta agenda, opcionalmente filtradas por un rango de fechas.
         """
-        turnos = self.ordenes_de_trabajo.filter(fecha_turno__isnull=False).order_by('fecha_turno')
+        turnos = self.ordenes.filter(fecha_turno__isnull=False).order_by('fecha_turno')
         if fecha_inicio:
             turnos = turnos.filter(fecha_turno__gte=fecha_inicio)
         if fecha_fin:
