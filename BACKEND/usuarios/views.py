@@ -108,42 +108,44 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         return AdministradorTecnico.objects.all()  # acceso abierto temporalmente
     
 
-    #crud OT desde tecnico (faltaria que puedar leer OT de otros talleres)
     
 
 
+    #Crud Cliente desde tecnico
+    @action(detail=True, methods=['post'])
+    def crear_cliente(self, request, pk=None):
+        tecnico = self.get_object()
+        serializer = ClienteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        cliente = tecnico.crear_cliente(
+            username=data['username'],
+            email=data['email'],
+            password=data['password'],
+            first_name=data.get('first_name', ''),
+            last_name=data.get('last_name', ''),
+            dni=data.get('dni'),
+            telefono=data.get('telefono', ''),
+            direccion=data.get('direccion', ''),
+        )
+        return Response(ClienteSerializer(cliente).data, status=status.HTTP_201_CREATED)
 
-#----------------------------
-    # @action(detail=True, methods=['post'])
-    # def crear_cliente(self, request, pk=None):
-    #     tecnico = self.get_object()
-    #     serializer = ClienteSerializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     data = serializer.validated_data
-    #     cliente = tecnico.crear_cliente(
-    #         username=data['username'],
-    #         email=data['email'],
-    #         password=data['password'],
-    #         first_name=data.get('first_name', ''),
-    #         last_name=data.get('last_name', ''),
-    #         dni=data.get('dni'),
-    #         telefono=data.get('telefono', ''),
-    #         direccion=data.get('direccion', ''),
-    #     )
-    #     return Response(ClienteSerializer(cliente).data, status=status.HTTP_201_CREATED)
-    # @action(detail=True, methods=['post'])
-    # def crear_vehiculo(self, request, pk=None):
-    #     tecnico = self.get_object()
-    #     serializer = VehiculoSerializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     vehiculo = tecnico.crear_vehiculo(
-    #         cliente=serializer.validated_data['cliente'],
-    #         modelo=serializer.validated_data['modelo'],
-    #         año=serializer.validated_data['año'],
-    #         dominio=serializer.validated_data['dominio'],
-    #     )
-    #     return Response(VehiculoSerializer(vehiculo).data, status=status.HTTP_201_CREATED)
 
+    #crud vehiculo desde tecnico    
+    @action(detail=True, methods=['post'])
+    def crear_vehiculo(self, request, pk=None):
+        tecnico = self.get_object()
+        serializer = VehiculoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        vehiculo = tecnico.crear_vehiculo(
+            cliente=serializer.validated_data['cliente'],
+            modelo=serializer.validated_data['modelo'],
+            año=serializer.validated_data['año'],
+            dominio=serializer.validated_data['dominio'],
+        )
+        return Response(VehiculoSerializer(vehiculo).data, status=status.HTTP_201_CREATED)
+
+    
     #Crud OT desde tecnico
     #POST
     @action(detail=True, methods=['post'])
@@ -215,9 +217,33 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         except PermissionError as e:
             return Response({'error': str(e)}, status=status.HTTP_403_FORBIDDEN)
 
+    #GET
+    @action(detail=False, methods=['get'], url_path='ordenes-del-taller')
+    def ordenes_del_taller(self, request):
+        tecnico = self.get_object()
+        ordenes = tecnico.get_ordenes_taller()
+        serializer = OrdenDeTrabajoSerializer(ordenes, many=True)
+        return Response(serializer.data)
+
+
+    @action(detail=True, methods=["get"], url_path="ordenes-del-taller/(?P<orden_id>[^/.]+)")
+    def detalle_orden(self, request, pk=None, orden_id=None):
+        tecnico = self.get_object()
+        orden = tecnico.obtener_orden(orden_id)
+        if not orden:
+            return Response({"detail": "Orden no encontrada o no pertenece a este taller."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = OrdenDeTrabajoSerializer(orden)
+        return Response(serializer.data)
 
 
 
+
+
+
+
+
+    
 # @action(detail=True, methods=["get"])
     # def ordenes(self, request, pk=None):
     #     tecnico = self.get_object()

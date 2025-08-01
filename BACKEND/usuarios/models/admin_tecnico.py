@@ -2,6 +2,10 @@ from django.db import models
 from talleres.models.taller import Taller
 from django.conf import settings
 from .usuario import Usuario
+from vehiculos.models.vehiculo import Vehiculo
+from usuarios.models.pemisoAcceso import PermisoDeAcceso
+
+
 class AdministradorTecnico(models.Model):  
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tecnico')
     taller = models.ForeignKey(Taller, on_delete=models.CASCADE, related_name='tecnicos')
@@ -13,29 +17,29 @@ class AdministradorTecnico(models.Model):
         return f"{self.usuario.username} (Técnico en {self.taller.nombre})"
     
     # #creás solo un objeto Cliente con todos los campos requeridos (incluidos los de Usuario).
-    # def crear_cliente(self, username, email, password, first_name, last_name=None, dni=None, telefono=None, direccion=None):
-    #     from .cliente import Cliente
-    #     usuario_cliente = Usuario.objects.create_user( #El password queda hasheado correctamente y podés usar el sistema de autenticación de Django.
-    #         username=username,
-    #         email=email,
-    #         password=password,
-    #         first_name=first_name,
-    #         last_name=last_name or '',
-    #         dni=dni,
-    #         telefono=telefono or '',
-    #         direccion=direccion or '',
-    #     )
-    #     cliente = Cliente.objects.create(usuario=usuario_cliente)
-    #     return cliente
-    # def crear_vehiculo(self, cliente, modelo, año, dominio):
-    #     from vehiculos.models.vehiculo import Vehiculo
-    #     return Vehiculo.objects.create(
-    #     cliente=cliente,
-    #     modelo=modelo,
-    #     año=año,
-    #     dominio=dominio,
-    #     creado_por=self
-    # )
+    def crear_cliente(self, username, email, password, first_name, last_name=None, dni=None, telefono=None, direccion=None):
+        from .cliente import Cliente
+        usuario_cliente = Usuario.objects.create_user( #El password queda hasheado correctamente y podés usar el sistema de autenticación de Django.
+            username=username,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name or '',
+            dni=dni,
+            telefono=telefono or '',
+            direccion=direccion or '',
+        )
+        cliente = Cliente.objects.create(usuario=usuario_cliente)
+        return cliente
+    def crear_vehiculo(self, cliente, modelo, año, dominio):
+        from vehiculos.models.vehiculo import Vehiculo
+        return Vehiculo.objects.create(
+        cliente=cliente,
+        modelo=modelo,
+        año=año,
+        dominio=dominio,
+        creado_por=self
+    )
     
     
     #OT
@@ -111,3 +115,23 @@ class AdministradorTecnico(models.Model):
 
         orden.delete()
         return f"Orden {orden_id} eliminada correctamente."
+
+
+    def ordenes_vehiculos_autorizados(self):
+        permisos = PermisoDeAcceso.objects.filter(taller_autorizado=self.taller).values_list('vehiculo_autorizado_id', flat=True)
+        vehiculos = Vehiculo.objects.filter(id__in=permisos)
+        return OrdenDeTrabajo.objects.filter(vehiculo__in=vehiculos)
+
+    #GET 
+    def get_ordenes_taller(self):
+        ordenes_directas = OrdenDeTrabajo.objects.filter(taller=self.taller)
+        ordenes_autorizadas = ordenes_vehiculos_autorizados(self)
+        ordenes = ordenes_directas.union(ordenes_autorizadas)
+        return ordenes
+    
+    def obtener_orden(self, orden_id):
+        try:
+            # Busca la orden que pertenece al taller del técnico y tiene ese id
+            return OrdenDeTrabajo.objects.get(id=orden_id, taller=self.taller)
+        except OrdenDeTrabajo.DoesNotExist:
+            return None
