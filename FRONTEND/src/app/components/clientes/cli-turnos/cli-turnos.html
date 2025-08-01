@@ -3,12 +3,6 @@
     <button class="tab-button" [class.active]="activeTab() === 'turnos'" (click)="setTab('turnos')" id="turnosTab">
         Turnos
     </button>
-    <div class="flex items-center text-gray-500">
-        <i class="fas fa-exchange-alt"></i>
-    </div>
-    <button class="tab-button" [class.active]="activeTab() === 'sugerido'" (click)="setTab('sugerido')" id="sugeridoTab">
-        Sugerido
-    </button>
 </div>
 
 <!-- Future Maintenances Section -->
@@ -41,61 +35,4 @@
             <button class="button-secondary">Cancelar</button>
         </div>
     </div>
-
-    <!-- Maintenance Card Example 2 (Another example of future maintenance) -->
-    <!--
-            <div class="card p-6 flex flex-col md:flex-row justify-between items-start md:items-center">
-                <div class="flex-1 mb-4 md:mb-0">
-                    <h2 class="text-xl font-bold text-gray-900 mb-2">#ORD-2025-008</h2>
-                    <p class="text-gray-700 mb-1">Vehículo: <span class="font-semibold">Ford Ranger</span></p>
-                    <p class="text-gray-700 mb-4">Dominio: <span class="font-semibold">BC 456 EF</span></p>
-                    <ul class="list-disc list-inside text-gray-700 mb-4 ml-4">
-                        <li>Revisión de frenos</li>
-                        <li>Cambio de filtros</li>
-                    </ul>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
-                        <p><i class="fas fa-dollar-sign mr-2 text-green-600"></i>Presupuesto: <span class="font-semibold">$75.000 AR$</span></p>
-                        <p><i class="fas fa-industry mr-2 text-blue-600"></i>Taller: <span class="font-semibold">Servicio Rápido Auto</span></p>
-                        <p><i class="fas fa-calendar-check mr-2 text-purple-600"></i>Entrega: <span class="font-semibold">20 de julio de 2025</span></p>
-                        <p><i class="fas fa-road mr-2 text-red-600"></i>Odómetro: <span class="font-semibold">70.000 km</span></p>
-                    </div>
-                    <p class="text-gray-700 mt-4"><i class="fas fa-user-circle mr-2 text-gray-500"></i>Referente: <span class="font-semibold">Maria Gómez</span></p>
-                </div>
-                <div class="flex flex-col items-center md:items-end">
-                    <p class="text-gray-700 mb-4"><i class="fas fa-calendar-alt mr-2"></i>15 de julio de 2025, 09:30hs</p>
-                    <button class="button-secondary">Cancelar</button>
-                </div>
-            </div>
-            -->
-</section>
-
-<!-- Suggested Maintenances Section (hidden by default) -->
-<section *ngIf="activeTab() === 'sugerido'" id="sugeridoContent" class="space-y-6">
-    <!-- Suggested Maintenance Card Example 1 (Updated) -->
-    <div class="card p-6 flex flex-col items-start bg-blue-100 border-l-4 border-blue-500">
-        <p class="text-blue-800 text-lg font-semibold mb-2">Próximo Mantenimiento Sugerido, lo primero que ocurra:</p>
-        <p class="text-gray-700 mb-1">Vehículo: <span class="font-semibold">BMW 530i</span></p>
-        <p class="text-gray-700 mb-4">Dominio: <span class="font-semibold">AG 123 CD</span></p>
-        <div class="flex items-center text-blue-800 text-xl font-bold">
-            <i class="far fa-calendar-alt mr-2 text-blue-600"></i>
-            <span class="mr-6">15 JUL 2025</span>
-            <i class="fas fa-road mr-2 text-blue-600"></i>
-            <span>95.000 km</span>
-        </div>
-    </div>
-
-    <!-- Suggested Maintenance Card Example 2 (Updated) -->
-    <!--
-            <div class="card p-6 flex flex-col items-start bg-blue-100 border-l-4 border-blue-500">
-                <p class="text-blue-800 text-lg font-semibold mb-2">Próximo Mantenimiento Sugerido, lo primero que ocurra:</p>
-                <p class="text-gray-700 mb-1">Vehículo: <span class="font-semibold">Honda Civic</span></p>
-                <p class="text-gray-700 mb-4">Dominio: <span class="font-semibold">CA 789 GH</span></p>
-                <div class="flex items-center text-blue-800 text-xl font-bold">
-                    <i class="far fa-calendar-alt mr-2 text-blue-600"></i>
-                    <span class="mr-6">25 AGO 2025</span>
-                    <i class="fas fa-road mr-2 text-blue-600"></i>
-                    <span>60.000 km</span>
-                </div>
-            </div>
-            -->
 </section>
