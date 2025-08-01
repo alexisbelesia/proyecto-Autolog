@@ -36,27 +36,78 @@ class AdministradorTecnico(models.Model):
     #     dominio=dominio,
     #     creado_por=self
     # )
-    # def crear_orden_trabajo(self, cliente, vehiculo, observaciones_tecnicas, fecha_siguiente_servicio, fecha_entrega, kilometraje,kilometraje_siguiente_servicio, mantenimiento='preventivo'):
-    #     from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
-    #     #NO ESTOY SEGURA DE QUE SEA NECESARIO
-    #     if mantenimiento not in dict(OrdenDeTrabajo.TIPOS_TRABAJO).keys():
-    #         raise ValueError(f"Tipo de mantenimiento inválido: {mantenimiento}. Debe ser 'preventivo' o 'correctivo'.")
-    #     orden = OrdenDeTrabajo.objects.create(
-    #         vehiculo=vehiculo,
-    #         tecnico=self,
-    #         taller=self.taller,
-    #         observaciones_tecnicas=observaciones_tecnicas,
-    #         fecha_siguiente_servicio=fecha_siguiente_servicio,
-    #         fecha_entrega=fecha_entrega,
-    #         kilometraje=kilometraje,
-    #         kilometraje_siguiente_servicio=kilometraje_siguiente_servicio,
-    #         mantenimiento=mantenimiento,
-    #         #PRESUPUESTO?
-    #         #PRACTICA?
-    #         #FECHA TURNO? 
-    #     )
-    #     orden.calcular_fecha_siguiente_servicio()
-    #     orden.save()
-    #     return orden
+    
+    
+    #OT
+    #CREATE
+    def crear_orden_trabajo(self, cliente, vehiculo, observaciones_tecnicas, fecha_siguiente_servicio, fecha_entrega, kilometraje,kilometraje_siguiente_servicio, mantenimiento='preventivo', fecha_turno = None):
+        from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
+        #NO ESTOY SEGURA DE QUE SEA NECESARIO
+        if mantenimiento not in dict(OrdenDeTrabajo.TIPOS_TRABAJO).keys():
+            raise ValueError(f"Tipo de mantenimiento inválido: {mantenimiento}. Debe ser 'preventivo' o 'correctivo'.")
+        
+        orden = OrdenDeTrabajo.objects.create(
+            vehiculo=vehiculo,
+            tecnico=self,
+            taller=self.taller,
+            observaciones_tecnicas=observaciones_tecnicas,
+            fecha_siguiente_servicio=fecha_siguiente_servicio,
+            fecha_entrega=fecha_entrega,
+            kilometraje=kilometraje,
+            kilometraje_siguiente_servicio=kilometraje_siguiente_servicio,
+            mantenimiento=mantenimiento,
+            fecha_turno=fecha_turno)
+            #PRESUPUESTO?
+            #PRACTICA?
+           
+        
+        orden.calcular_fecha_siguiente_servicio()
+        orden.save()
+        return orden
 
     
+    #UPDATE
+    def actualizar_orden_trabajo(
+    self,  orden, observaciones_tecnicas=None, fecha_siguiente_servicio=None,
+    fecha_entrega=None, kilometraje=None, kilometraje_siguiente_servicio=None,
+    mantenimiento=None, fecha_turno=None):
+
+
+    # Validación opcional: solo puede modificar sus propias órdenes
+        if orden.tecnico != self:
+            raise PermissionError("No tiene permiso para modificar esta orden.")
+
+        # Actualizamos solo si se pasa un valor nuevo
+        if observaciones_tecnicas is not None:
+            orden.observaciones_tecnicas = observaciones_tecnicas
+        if fecha_siguiente_servicio is not None:
+            orden.fecha_siguiente_servicio = fecha_siguiente_servicio
+        if fecha_entrega is not None:
+            orden.fecha_entrega = fecha_entrega
+        if kilometraje is not None:
+            orden.kilometraje = kilometraje
+        if kilometraje_siguiente_servicio is not None:
+            orden.kilometraje_siguiente_servicio = kilometraje_siguiente_servicio
+        if mantenimiento is not None:
+            orden.mantenimiento = mantenimiento
+        if fecha_turno is not None:
+            orden.fecha_turno = fecha_turno
+
+        # Guardamos
+        orden.save()
+        return orden
+
+
+    #DELETE
+    def eliminar_orden_trabajo(self, orden_id):
+
+        try:
+            orden = OrdenDeTrabajo.objects.get(pk=orden_id)
+        except OrdenDeTrabajo.DoesNotExist:
+            raise ValueError("La orden no existe.")
+
+        if orden.tecnico_id != self.id:
+            raise PermissionError("No tenés permiso para eliminar esta orden.")
+
+        orden.delete()
+        return f"Orden {orden_id} eliminada correctamente."

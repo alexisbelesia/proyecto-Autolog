@@ -109,66 +109,7 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     
 
     #crud OT desde tecnico (faltaria que puedar leer OT de otros talleres)
-    @action(detail=True, methods=["get"])
-    def ordenes(self, request, pk=None):
-        tecnico = self.get_object()
-        ordenes = OrdenDeTrabajo.objects.filter(taller=tecnico.taller)
-        serializer = OrdenDeTrabajoSerializer(ordenes, many=True)
-        return Response(serializer.data)
-    @action(detail=True, methods=["post"])
-    def crear_orden(self, request, pk=None):
-        tecnico = self.get_object()
-        serializer = OrdenDeTrabajoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(tecnico=tecnico, taller=tecnico.taller)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    @action(detail=True, methods=["patch", "delete"], url_path="ordenes/(?P<orden_id>[^/.]+)")
-    def modificar_orden(self, request, pk=None, orden_id=None):
-        tecnico = self.get_object()
-        try:
-            orden = OrdenDeTrabajo.objects.get(id=orden_id, taller=tecnico.taller)
-        except OrdenDeTrabajo.DoesNotExist:
-            return Response({"error": "Orden no encontrada."}, status=404)
-        if request.method == "PATCH":
-            serializer = OrdenDeTrabajoSerializer(orden, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=400)
-        if request.method == "DELETE":
-            orden.delete()
-            return Response(status=204)
-    def perform_update(self, serializer):
-        serializer.save()
-    def perform_destroy(self, instance):
-        if instance.usuario == self.request.user:
-            instance.delete()
-    #crear vehiculo
-    @action(detail=True, methods=['post'])
-    def crear_vehiculo(self, request, pk=None):
-        tecnico = self.get_object()
-        serializer = VehiculoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(creado_por=tecnico)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-     #crear cliente
-    @action(detail=True, methods=['post'])
-    def crear_cliente(self, request, pk=None):
-        tecnico = self.get_object()
-        serializer = ClienteSerializer(data=request.data)
-        if serializer.is_valid():
-            cliente = serializer.save()
-            # si querés podés hacer algo con el cliente creado y el técnico, ej: asignar taller etc.
-            return Response(ClienteSerializer(cliente).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-  
-
-
-
-
 
 
 
@@ -204,19 +145,131 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     #     return Response(VehiculoSerializer(vehiculo).data, status=status.HTTP_201_CREATED)
 
     #Crud OT desde tecnico
-    # @action(detail=True, methods=['post'])
+    #POST
+    @action(detail=True, methods=['post'])
+    def crear_orden(self, request, pk=None):
+        tecnico = self.get_object()
+        data = request.data
+
+        try:
+            orden = tecnico.crear_orden_trabajo(
+                cliente_id=data['cliente'],
+                vehiculo_id=data['vehiculo'],
+                observaciones_tecnicas=data.get('observaciones_tecnicas', ''),
+                fecha_siguiente_servicio=data['fecha_siguiente_servicio'],
+                fecha_entrega=data['fecha_entrega'],
+                kilometraje=data['kilometraje'],
+                kilometraje_siguiente_servicio=data['kilometraje_siguiente_servicio'],
+                mantenimiento=data.get('mantenimiento', 'preventivo'),
+                fecha_turno=data['fecha_turno'],
+            )
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Serializar la orden creada
+        serializer = OrdenDeTrabajoSerializer(orden)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    #PUT
+    @action(detail=True, methods=["patch"], url_path="ordenes/(?P<orden_id>[^/.]+)/actualizar")
+    def actualizar_orden(self, request, pk=None, orden_id=None):
+        tecnico = self.get_object()
+
+        try:
+            orden = OrdenDeTrabajo.objects.get(pk=orden_id)
+
+            if orden.tecnico != tecnico:
+                return Response({"error": "No tiene permiso para modificar esta orden."}, status=403)
+
+            # Llamamos al método del modelo
+            orden_actualizada = tecnico.actualizar_orden_trabajo(
+                orden,
+                observaciones_tecnicas=request.data.get("observaciones_tecnicas"),
+                fecha_siguiente_servicio=request.data.get("fecha_siguiente_servicio"),
+                fecha_entrega=request.data.get("fecha_entrega"),
+                kilometraje=request.data.get("kilometraje"),
+                kilometraje_siguiente_servicio=request.data.get("kilometraje_siguiente_servicio"),
+                mantenimiento=request.data.get("mantenimiento"),
+                fecha_turno=request.data.get("fecha_turno")
+            )
+
+            # Podés usar un serializer 
+            return Response({
+                "mensaje": "Orden actualizada correctamente",
+                "orden_id": orden_actualizada.id
+            })
+
+        except OrdenDeTrabajo.DoesNotExist:
+            return Response({"error": f"No existe la orden con ID {orden_id}"}, status=404)
+
+
+    #DELETE
+    @action(detail=True, methods=['delete'], url_path='orden/(?P<orden_id>[^/.]+)/eliminar')
+    def eliminar_orden(self, request, pk=None, orden_id=None):
+        tecnico = self.get_object()
+        try:
+            mensaje = tecnico.eliminar_orden_trabajo(orden_id)
+            return Response({'mensaje': mensaje}, status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionError as e:
+            return Response({'error': str(e)}, status=status.HTTP_403_FORBIDDEN)
+
+
+
+
+# @action(detail=True, methods=["get"])
+    # def ordenes(self, request, pk=None):
+    #     tecnico = self.get_object()
+    #     ordenes = OrdenDeTrabajo.objects.filter(taller=tecnico.taller)
+    #     serializer = OrdenDeTrabajoSerializer(ordenes, many=True)
+    #     return Response(serializer.data)
+    # @action(detail=True, methods=["post"])
     # def crear_orden(self, request, pk=None):
     #     tecnico = self.get_object()
     #     serializer = OrdenDeTrabajoSerializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     orden = tecnico.crear_orden_trabajo(
-    #         cliente=serializer.validated_data.get('cliente'),
-    #         vehiculo=serializer.validated_data['vehiculo'],
-    #         observaciones_tecnicas=serializer.validated_data.get('observaciones_tecnicas', ''),
-    #         fecha_siguiente_servicio=serializer.validated_data.get('fecha_siguiente_servicio'),
-    #         fecha_entrega=serializer.validated_data['fecha_entrega'],
-    #         kilometraje=serializer.validated_data['kilometraje'],
-    #         kilometraje_siguiente_servicio=serializer.validated_data.get('kilometraje_siguiente_servicio'),
-    #         mantenimiento=serializer.validated_data.get('mantenimiento', 'preventivo'),
-    #     )
-    #     return Response(OrdenDeTrabajoSerializer(orden).data, status=status.HTTP_201_CREATED)
+    #     if serializer.is_valid():
+    #         serializer.save(tecnico=tecnico, taller=tecnico.taller)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # @action(detail=True, methods=["patch", "delete"], url_path="ordenes/(?P<orden_id>[^/.]+)")
+    # def modificar_orden(self, request, pk=None, orden_id=None):
+    #     tecnico = self.get_object()
+    #     try:
+    #         orden = OrdenDeTrabajo.objects.get(id=orden_id, taller=tecnico.taller)
+    #     except OrdenDeTrabajo.DoesNotExist:
+    #         return Response({"error": "Orden no encontrada."}, status=404)
+    #     if request.method == "PATCH":
+    #         serializer = OrdenDeTrabajoSerializer(orden, data=request.data, partial=True)
+    #         if serializer.is_valid():
+    #             serializer.save()
+    #             return Response(serializer.data)
+    #         return Response(serializer.errors, status=400)
+    #     if request.method == "DELETE":
+    #         orden.delete()
+    #         return Response(status=204)
+    # def perform_update(self, serializer):
+    #     serializer.save()
+    # def perform_destroy(self, instance):
+    #     if instance.usuario == self.request.user:
+    #         instance.delete()
+    # #crear vehiculo
+    # @action(detail=True, methods=['post'])
+    # def crear_vehiculo(self, request, pk=None):
+    #     tecnico = self.get_object()
+    #     serializer = VehiculoSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save(creado_por=tecnico)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    #  #crear cliente
+    # @action(detail=True, methods=['post'])
+    # def crear_cliente(self, request, pk=None):
+    #     tecnico = self.get_object()
+    #     serializer = ClienteSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         cliente = serializer.save()
+    #         # si querés podés hacer algo con el cliente creado y el técnico, ej: asignar taller etc.
+    #         return Response(ClienteSerializer(cliente).data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
