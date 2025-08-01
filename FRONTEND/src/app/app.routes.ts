@@ -4,6 +4,7 @@ import { CliInicio } from './components/clientes/cli-inicio/cli-inicio';
 import { Historial } from './components/clientes/cli-inicio/historial/historial';
 import { CliTurnos } from './components/clientes/cli-turnos/cli-turnos';
 import { CliTalleres } from './components/clientes/cli-talleres/cli-talleres';
+import { CliPedirTurno} from './components/clientes/cli-talleres/cli-pedir_turno/cli-pedir_turno'
 import { CliPm } from './components/clientes/cli-pm/cli-pm';
 import { CliConfig } from './components/clientes/cli-config/cli-config';
 
@@ -18,6 +19,7 @@ export const routes: Routes = [
     {path: 'cliente/historial/:vehiculoId', component: Historial},
     {path: 'cliente/turnos', component: CliTurnos},
     {path: 'cliente/talleres', component: CliTalleres},
+    {path: 'cliente/pedir_turno', component: CliPedirTurno},
     {path: 'cliente/pm', component: CliPm},
     {path: 'cliente/config', component: CliConfig},
 

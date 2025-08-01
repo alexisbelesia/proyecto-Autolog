@@ -1,10 +1,3 @@
-<!-- Tabs for Maintenance Sections -->
-<div class="flex space-x-4 mb-8">
-    <button class="tab-button" [class.active]="activeTab() === 'turnos'" (click)="setTab('turnos')" id="turnosTab">
-        Turnos
-    </button>
-</div>
-
 <!-- Future Maintenances Section -->
 <section *ngIf="activeTab() === 'turnos'" id="turnosContent" class="space-y-6">
     <!-- Maintenance Card Example 1 -->
@@ -18,17 +11,12 @@
                 <li>Alineación</li>
             </ul>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
-                <p><i class="fas fa-dollar-sign mr-2 text-green-600"></i>Presupuesto: <span
-                        class="font-semibold">$100.000 AR$</span></p>
-                <p><i class="fas fa-industry mr-2 text-blue-600"></i>Taller: <span class="font-semibold">Mecánica
-                        Plus</span></p>
-                <p><i class="fas fa-calendar-check mr-2 text-purple-600"></i>Entrega: <span class="font-semibold">10 de
-                        julio de 2025</span></p>
-                <p><i class="fas fa-road mr-2 text-red-600"></i>Odómetro: <span class="font-semibold">85.000 km</span>
-                </p>
+                <p><i class="fas fa-dollar-sign mr-2 text-green-600"></i>Presupuesto: <span class="font-semibold">$100.000 AR$</span></p>
+                <p><i class="fas fa-industry mr-2 text-blue-600"></i>Taller: <span class="font-semibold">Mecánica Plus</span></p>
+                <p><i class="fas fa-calendar-check mr-2 text-purple-600"></i>Entrega: <span class="font-semibold">10 de julio de 2025</span></p>
+                <p><i class="fas fa-road mr-2 text-red-600"></i>Odómetro: <span class="font-semibold">85.000 km</span></p>
             </div>
-            <p class="text-gray-700 mt-4"><i class="fas fa-user-circle mr-2 text-gray-500"></i>Referente: <span
-                    class="font-semibold">Juan Pérez</span></p>
+            <p class="text-gray-700 mt-4"><i class="fas fa-user-circle mr-2 text-gray-500"></i>Referente: <span class="font-semibold">Juan Pérez</span></p>
         </div>
         <div class="flex flex-col items-center md:items-end">
             <p class="text-gray-700 mb-4"><i class="fas fa-calendar-alt mr-2"></i>7 de julio de 2025, 10:00hs</p>
@@ -36,3 +24,4 @@
         </div>
     </div>
 </section>
+
