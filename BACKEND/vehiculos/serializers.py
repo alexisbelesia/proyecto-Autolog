@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Vehiculo, Marca, Modelo
 from ordenes.serializers import OrdenDeTrabajoSerializer 
 
+
 class VehiculoSerializer(serializers.ModelSerializer):
 
     marca = serializers.SerializerMethodField(), 
@@ -12,7 +13,8 @@ class VehiculoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vehiculo
         fields = '__all__'
-    
+        read_only_fields = ['propietario']
+        
     def get_marca(self, obj):
         return obj.marca
     

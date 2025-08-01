@@ -1,0 +1,167 @@
+[
+{
+  "model": "vehiculos.marca",
+  "pk": 1,
+  "fields": {
+    "nombre": "Honda"
+  }
+},
+{
+  "model": "vehiculos.marca",
+  "pk": 2,
+  "fields": {
+    "nombre": "Renault"
+  }
+},
+{
+  "model": "vehiculos.marca",
+  "pk": 3,
+  "fields": {
+    "nombre": "Volkswagen"
+  }
+},
+{
+  "model": "vehiculos.marca",
+  "pk": 4,
+  "fields": {
+    "nombre": "Fiat"
+  }
+},
+{
+  "model": "vehiculos.marca",
+  "pk": 5,
+  "fields": {
+    "nombre": "Peugeot"
+  }
+},
+{
+  "model": "vehiculos.marca",
+  "pk": 6,
+  "fields": {
+    "nombre": "Ford"
+  }
+},
+{
+  "model": "vehiculos.marca",
+  "pk": 7,
+  "fields": {
+    "nombre": "Toyota"
+  }
+},
+{
+  "model": "vehiculos.modelo",
+  "pk": 1,
+  "fields": {
+    "nombre": "Accord",
+    "marca": 1
+  }
+},
+{
+  "model": "vehiculos.modelo",
+  "pk": 2,
+  "fields": {
+    "nombre": "Duster",
+    "marca": 2
+  }
+},
+{
+  "model": "vehiculos.modelo",
+  "pk": 3,
+  "fields": {
+    "nombre": "Ranger",
+    "marca": 6
+  }
+},
+{
+  "model": "vehiculos.modelo",
+  "pk": 4,
+  "fields": {
+    "nombre": "Hilux",
+    "marca": 7
+  }
+},
+{
+  "model": "vehiculos.vehiculo",
+  "pk": 1,
+  "fields": {
+    "año": 2010,
+    "dominio": "dom1",
+    "intervalo_servicio_km": 5000,
+    "intervalo_servicio_meses": 6,
+    "fecha_prox_servicio": null,
+    "kilometraje_prox_servicio": null,
+    "modelo": 1,
+    "propietario": 1
+  }
+},
+{
+  "model": "vehiculos.vehiculo",
+  "pk": 2,
+  "fields": {
+    "año": 2011,
+    "dominio": "dom2",
+    "intervalo_servicio_km": 15000,
+    "intervalo_servicio_meses": 18,
+    "fecha_prox_servicio": null,
+    "kilometraje_prox_servicio": null,
+    "modelo": 2,
+    "propietario": 1
+  }
+},
+{
+  "model": "usuarios.usuario",
+  "pk": 1,
+  "fields": {
+    "password": "c1",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "usuario1",
+    "first_name": "nombre1",
+    "last_name": "apellido1",
+    "email": "email1@unmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-07-31T18:40:06.628Z",
+    "dni": "dni1",
+    "telefono": "tel1",
+    "direccion": "dir1",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuario",
+  "pk": 2,
+  "fields": {
+    "password": "c2",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "usuario2",
+    "first_name": "nombre2",
+    "last_name": "apellido2",
+    "email": "email2@unmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-07-31T18:40:30.316Z",
+    "dni": "dni2",
+    "telefono": "tel2",
+    "direccion": "dir2",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.cliente",
+  "pk": 1,
+  "fields": {
+    "usuario": 1
+  }
+},
+{
+  "model": "usuarios.cliente",
+  "pk": 2,
+  "fields": {
+    "usuario": 2
+  }
+}
+]

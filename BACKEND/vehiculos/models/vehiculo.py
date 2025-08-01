@@ -1,6 +1,5 @@
 from django.db import models
 from .modelo import Modelo
-from datetime import timedelta
 
 
 class Vehiculo(models.Model):
@@ -26,8 +25,9 @@ class Vehiculo(models.Model):
     
     @property
     def historial(self):
-        return self.ordenes.all().order_by('fecha_turno') 
-
+        ordenes =  self.ordenes.all().order_by('fecha_turno') 
+        return ordenes
+    
     def __str__(self):
         return f"{self.modelo.marca.nombre} {self.modelo.nombre} {self.año} {self.dominio}"
 

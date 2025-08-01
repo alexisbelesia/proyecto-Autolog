@@ -4,11 +4,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, status, permissions
 from rest_framework.exceptions import PermissionDenied
-
+from rest_framework import permissions
+from django.core.exceptions import ObjectDoesNotExist
 from .models import Usuario,Cliente,AdministradorTecnico
 from .serializers import UsuarioSerializer,ClienteSerializer,AdministradorTecnicoSerializer,PermisoSerializer
 
 from vehiculos.serializers import VehiculoSerializer
+from vehiculos.models import Vehiculo
 from ordenes.serializers import OrdenDeTrabajoSerializer
 from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
 
@@ -18,7 +20,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all().order_by('-date_joined')
     serializer_class = UsuarioSerializer
 
-#----cliente
+#----------------------------CLIENTE-------------------------------------------#
 class clienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
@@ -48,12 +50,13 @@ class clienteViewSet(viewsets.ModelViewSet):
         except Vehiculo.DoesNotExist:
             return Response({'error': 'vehiculo no encontrado'},status=status.HTTP_404_NOT_FOUND)
         
-    
         if cliente.tiene_permiso(vehiculo):
-
-            historial = vehiculo.historial
-            serializer = OrdenDeTrabajoSerializer(historial,many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            try:
+                historial = vehiculo.historial
+                serializer = OrdenDeTrabajoSerializer(historial,many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except ObjectDoesNotExist:
+             return Response({'mensaje': 'El vehiculo no tiene historial de órdenes.'}, status=404)
         else:    
             return Response({'mensaje':'no tenes permiso para ver este historial de vehiculo'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -71,9 +74,7 @@ class clienteViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def service (self,request,pk=None):
         cliente = self.get_object()
-        vehiculo_id = request.query_params.get('vehiculo_id')
-        
-        
+        vehiculo_id = request.query_params.get('vehiculo_id')   
         try:
             vehiculo = Vehiculo.objects.get(pk=vehiculo_id)
         except Vehiculo.DoesNotExist:
@@ -86,14 +87,28 @@ class clienteViewSet(viewsets.ModelViewSet):
         kilometraje = vehiculo.kilometraje_prox_servicio
         
         if not fecha or not kilometraje:
-            return Response({'mensaje':'vehiculo sin proximo servicio estimado'}, status=status.HTTP_404_NOT_FOUND)
-        
+            return Response({'mensaje':'vehiculo sin proximo servicio estimado'}, status=status.HTTP_404_NOT_FOUND) 
         return Response({
             'fecha_prox_servicio': fecha,
             'kilometraje_prox_servicio': kilometraje
         },status=status.HTTP_200_OK)
-          
-            
+
+    @action(detail=True, methods=['post'])
+    def crear_vehiculo (self, request, pk=None):
+        serializer = VehiculoSerializer(data = request.data)
+        serializer.is_valid(raise_exception=True)  
+
+        vehiculo_data = serializer.validated_data
+        cliente = self.get_object()
+        try: 
+            vehiculo = cliente.crear_vehiculo(**vehiculo_data)
+        except IntegrityError:
+            return Response({'mensaje': 'ya existe un vehiculo con esa patente'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({'id':vehiculo.id, 'mensaje':'vehiculo creado'}, status=status.HTTP_201_CREATED)
+
+
+         
 
 
 #----admintec

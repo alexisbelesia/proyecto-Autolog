@@ -37,7 +37,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class PermisoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PermisoDeAcceso
-        fields = ['vehiculo_autorizado','usuario_autorizado', 'taller_autorizado']
+        fields = ['vehiculo_autorizado','cliente_autorizado', 'taller_autorizado']
             
 class ClienteSerializer(serializers.ModelSerializer):
     
