@@ -44,7 +44,7 @@ class AdministradorTecnico(models.Model):
     
     #OT
     #CREATE
-    def crear_orden_trabajo(self, cliente, vehiculo, observaciones_tecnicas, fecha_entrega, kilometraje, mantenimiento='preventivo', fecha_turno = None):
+    def crear_orden_trabajo(self, cliente, vehiculo, fecha_turno, kilometraje, mantenimiento='preventivo', observaciones_tecnicas=None, fecha_entrega=None):
         from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
         #NO ESTOY SEGURA DE QUE SEA NECESARIO
         if mantenimiento not in dict(OrdenDeTrabajo.TIPOS_TRABAJO).keys():
@@ -55,12 +55,10 @@ class AdministradorTecnico(models.Model):
             tecnico=self,
             taller=self.taller,
             observaciones_tecnicas=observaciones_tecnicas,
-            #fecha_siguiente_servicio=fecha_siguiente_servicio,
-            fecha_entrega=fecha_entrega,
-            kilometraje=kilometraje,
-            #kilometraje_siguiente_servicio=kilometraje_siguiente_servicio,
+            kilometraje = kilometraje,
             mantenimiento=mantenimiento,
             fecha_turno=fecha_turno,
+            fecha_entrega = fecha_entrega,
             cliente=cliente)
             #PRESUPUESTO?
             #PRACTICA?

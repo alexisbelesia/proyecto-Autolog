@@ -169,20 +169,12 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def crear_orden(self, request, pk=None):
         tecnico = self.get_object()
-        data = request.data
-
+        serializer = OrdenDeTrabajoSerializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        orden = serializer.validated_data
         try:
-            orden = tecnico.crear_orden_trabajo(
-                cliente=data['cliente'],
-                vehiculo=data['vehiculo'],
-                observaciones_tecnicas=data.get('observaciones_tecnicas', ''),
-                #fecha_siguiente_servicio=data['fecha_siguiente_servicio'],
-                fecha_entrega=data['fecha_entrega'],
-                kilometraje=data['kilometraje'],
-                #kilometraje_siguiente_servicio=data['kilometraje_siguiente_servicio'],
-                mantenimiento=data.get('mantenimiento', 'preventivo'),
-                fecha_turno=data['fecha_turno'],
-            )
+            orden = tecnico.crear_orden_trabajo(**orden)
+
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -191,32 +183,30 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     #PATCH
-    @action(detail=True, methods=["patch"], url_path="ordenes/(?P<orden_id>[^/.]+)/actualizar")
+    @action(detail=True, methods=["patch"]) #url_path="ordenes/(?P<orden_id>[^/.]+)/actualizar")
     def actualizar_orden(self, request, pk=None, orden_id=None):
         tecnico = self.get_object()
+        orden_id = request.query_params.get('orden_id')
+        serializer = OrdenDeTrabajoSerializer(data= request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        nuevos_datos = serializer.validated_data
 
         try:
             orden = OrdenDeTrabajo.objects.get(pk=orden_id)
 
-            if orden.tecnico != tecnico:
+            if orden.tecnico_id != tecnico.id:
                 return Response({"error": "No tiene permiso para modificar esta orden."}, status=403)
 
-            # Llamamos al método del modelo
-            orden_actualizada = tecnico.actualizar_orden_trabajo(
-                orden,
-                observaciones_tecnicas=request.data.get("observaciones_tecnicas"),
-                fecha_siguiente_servicio=request.data.get("fecha_siguiente_servicio"),
-                fecha_entrega=request.data.get("fecha_entrega"),
-                kilometraje=request.data.get("kilometraje"),
-                kilometraje_siguiente_servicio=request.data.get("kilometraje_siguiente_servicio"),
-                mantenimiento=request.data.get("mantenimiento"),
-                fecha_turno=request.data.get("fecha_turno")
-            )
+            # Aplicar los cambios a la instancia
+            for campo, valor in nuevos_datos.items():
+                setattr(orden, campo, valor)
 
+            orden.save()
+               
             # Podés usar un serializer 
             return Response({
                 "mensaje": "Orden actualizada correctamente",
-                "orden_id": orden_actualizada.id
+                "orden_id": orden.id
             })
 
         except OrdenDeTrabajo.DoesNotExist:
@@ -244,7 +234,7 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-    @action(detail=True, methods=["get"], url_path="ordenes-del-taller/(?P<orden_id>[^/.]+)")
+    @action(detail=True, methods=["get"])#, url_path="ordenes-del-taller/(?P<orden_id>[^/.]+)")
     def detalle_orden(self, request, pk=None, orden_id=None):
         tecnico = self.get_object()
         orden = tecnico.obtener_orden(orden_id)
