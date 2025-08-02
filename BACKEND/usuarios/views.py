@@ -226,8 +226,34 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
             return Response({'error': str(e)}, status=status.HTTP_403_FORBIDDEN)
 
     #GET
-    @action(detail=False, methods=['get'], url_path='ordenes-del-taller')
-    def ordenes_del_taller(self, request):
+    @action(detail=True, methods=['get'], url_path='ordenes_del_taller')
+    def ordenes_del_taller(self, request, pk=None):
+        # --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+        print("=============================================")
+        try:
+            tecnico = self.get_object()
+            print(f"✅ Técnico encontrado: {tecnico} (ID: {tecnico.id})")
+            
+            if tecnico.taller:
+                print(f"✅ Taller del técnico: {tecnico.taller.nombre} (ID: {tecnico.taller.id})")
+                
+                # Esta es la consulta clave
+                ordenes = tecnico.taller.orden_de_trabajo.all()
+                
+                print(f"🔍 Consulta realizada: OrdenDeTrabajo.objects.filter(taller_id={tecnico.taller.id})")
+                print(f"📊 Cantidad de órdenes encontradas: {ordenes.count()}")
+                print(f"📦 Órdenes: {list(ordenes)}")
+
+            else:
+                print("❌ ERROR: Este técnico no tiene un taller asignado.")
+                ordenes = OrdenDeTrabajo.objects.none()
+
+        except AdministradorTecnico.DoesNotExist:
+            print(f"❌ ERROR: No se encontró ningún técnico con el ID: {pk}")
+            return Response({"error": "Técnico no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            
+        print("=============================================")
+        # --- FIN DE CÓDIGO DE DEPURACIÓN ---
         tecnico = self.get_object()
         ordenes = tecnico.get_ordenes_taller()
         serializer = OrdenDeTrabajoSerializer(ordenes, many=True)
