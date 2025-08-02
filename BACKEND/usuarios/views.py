@@ -133,16 +133,20 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         serializer = ClienteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+
+        usuario_data = data['usuario']
+
         cliente = tecnico.crear_cliente(
-            username=data['username'],
-            email=data['email'],
-            password=data['password'],
-            first_name=data.get('first_name', ''),
-            last_name=data.get('last_name', ''),
+            username=usuario_data['username'],
+            email=usuario_data['email'],
+            password=usuario_data['password'],
+            first_name=usuario_data.get('first_name', ''),
+            last_name=usuario_data.get('last_name', ''),
             dni=data.get('dni'),
             telefono=data.get('telefono', ''),
             direccion=data.get('direccion', ''),
         )
+
         return Response(ClienteSerializer(cliente).data, status=status.HTTP_201_CREATED)
 
 
@@ -186,7 +190,7 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         serializer = OrdenDeTrabajoSerializer(orden)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    #PUT
+    #PATCH
     @action(detail=True, methods=["patch"], url_path="ordenes/(?P<orden_id>[^/.]+)/actualizar")
     def actualizar_orden(self, request, pk=None, orden_id=None):
         tecnico = self.get_object()
