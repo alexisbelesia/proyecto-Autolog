@@ -5,7 +5,7 @@ from ordenes.serializers import OrdenDeTrabajoSerializer
 
 class VehiculoSerializer(serializers.ModelSerializer):
 
-    marca = serializers.SerializerMethodField(), 
+    marca = serializers.SerializerMethodField()
     fecha_prox_servicio = serializers.DateField(read_only=True)
     kilometraje_prox_servicio = serializers.IntegerField(read_only=True)
     historial = serializers.SerializerMethodField(read_only=True)
@@ -16,7 +16,7 @@ class VehiculoSerializer(serializers.ModelSerializer):
         read_only_fields = ['propietario']
         
     def get_marca(self, obj):
-        return obj.marca
+        return MarcaSerializer(obj.marca).data
     
     def get_historial(self, obj):
         historial = obj.historial

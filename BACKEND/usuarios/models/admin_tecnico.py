@@ -4,6 +4,7 @@ from django.conf import settings
 from .usuario import Usuario
 from vehiculos.models.vehiculo import Vehiculo
 from usuarios.models.pemisoAcceso import PermisoDeAcceso
+from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
 
 
 class AdministradorTecnico(models.Model):  
@@ -34,17 +35,16 @@ class AdministradorTecnico(models.Model):
     def crear_vehiculo(self, cliente, modelo, año, dominio):
         from vehiculos.models.vehiculo import Vehiculo
         return Vehiculo.objects.create(
-        cliente=cliente,
+        propietario=cliente,
         modelo=modelo,
         año=año,
         dominio=dominio,
-        creado_por=self
     )
     
     
     #OT
     #CREATE
-    def crear_orden_trabajo(self, cliente, vehiculo, observaciones_tecnicas, fecha_siguiente_servicio, fecha_entrega, kilometraje,kilometraje_siguiente_servicio, mantenimiento='preventivo', fecha_turno = None):
+    def crear_orden_trabajo(self, cliente, vehiculo, observaciones_tecnicas, fecha_entrega, kilometraje, mantenimiento='preventivo', fecha_turno = None):
         from ordenes.models.ordenDeTrabajo import OrdenDeTrabajo
         #NO ESTOY SEGURA DE QUE SEA NECESARIO
         if mantenimiento not in dict(OrdenDeTrabajo.TIPOS_TRABAJO).keys():
@@ -55,12 +55,13 @@ class AdministradorTecnico(models.Model):
             tecnico=self,
             taller=self.taller,
             observaciones_tecnicas=observaciones_tecnicas,
-            fecha_siguiente_servicio=fecha_siguiente_servicio,
+            #fecha_siguiente_servicio=fecha_siguiente_servicio,
             fecha_entrega=fecha_entrega,
             kilometraje=kilometraje,
-            kilometraje_siguiente_servicio=kilometraje_siguiente_servicio,
+            #kilometraje_siguiente_servicio=kilometraje_siguiente_servicio,
             mantenimiento=mantenimiento,
-            fecha_turno=fecha_turno)
+            fecha_turno=fecha_turno,
+            cliente=cliente)
             #PRESUPUESTO?
             #PRACTICA?
            
@@ -116,18 +117,15 @@ class AdministradorTecnico(models.Model):
         orden.delete()
         return f"Orden {orden_id} eliminada correctamente."
 
-
-    def ordenes_vehiculos_autorizados(self):
+    #GET
+    def get_ordenes_taller(self):
         permisos = PermisoDeAcceso.objects.filter(taller_autorizado=self.taller).values_list('vehiculo_autorizado_id', flat=True)
         vehiculos = Vehiculo.objects.filter(id__in=permisos)
-        return OrdenDeTrabajo.objects.filter(vehiculo__in=vehiculos)
-
-    #GET 
-    def get_ordenes_taller(self):
+        ordenes_autorizadas = OrdenDeTrabajo.objects.filter(vehiculo__in=vehiculos)
         ordenes_directas = OrdenDeTrabajo.objects.filter(taller=self.taller)
-        ordenes_autorizadas = ordenes_vehiculos_autorizados(self)
         ordenes = ordenes_directas.union(ordenes_autorizadas)
         return ordenes
+     
     
     def obtener_orden(self, orden_id):
         try:

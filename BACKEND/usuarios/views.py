@@ -153,13 +153,12 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
         serializer = VehiculoSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         vehiculo = tecnico.crear_vehiculo(
-            cliente=serializer.validated_data['cliente'],
+            cliente=serializer.validated_data['propietario'],
             modelo=serializer.validated_data['modelo'],
             año=serializer.validated_data['año'],
             dominio=serializer.validated_data['dominio'],
         )
         return Response(VehiculoSerializer(vehiculo).data, status=status.HTTP_201_CREATED)
-
     
     #Crud OT desde tecnico
     #POST
@@ -170,13 +169,13 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
 
         try:
             orden = tecnico.crear_orden_trabajo(
-                cliente_id=data['cliente'],
-                vehiculo_id=data['vehiculo'],
+                cliente=data['cliente'],
+                vehiculo=data['vehiculo'],
                 observaciones_tecnicas=data.get('observaciones_tecnicas', ''),
-                fecha_siguiente_servicio=data['fecha_siguiente_servicio'],
+                #fecha_siguiente_servicio=data['fecha_siguiente_servicio'],
                 fecha_entrega=data['fecha_entrega'],
                 kilometraje=data['kilometraje'],
-                kilometraje_siguiente_servicio=data['kilometraje_siguiente_servicio'],
+                #kilometraje_siguiente_servicio=data['kilometraje_siguiente_servicio'],
                 mantenimiento=data.get('mantenimiento', 'preventivo'),
                 fecha_turno=data['fecha_turno'],
             )
