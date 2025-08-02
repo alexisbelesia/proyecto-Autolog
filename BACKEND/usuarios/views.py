@@ -94,7 +94,7 @@ class clienteViewSet(viewsets.ModelViewSet):
         },status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
-    def crear_vehiculo (self, request, pk=None):
+    def crear_vehiculo(self, request, pk=None):
         serializer = VehiculoSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)  
 
@@ -228,7 +228,7 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
     #GET
     @action(detail=True, methods=['get'], url_path='ordenes_del_taller')
     def ordenes_del_taller(self, request, pk=None):
-        # --- INICIO DE CÓDIGO DE DEPURACIÓN ---
+        # --- INICIO DE DEPURACIÓN ---
         print("=============================================")
         try:
             tecnico = self.get_object()
@@ -253,15 +253,21 @@ class AdministradorTecnicoViewSet(viewsets.ModelViewSet):
             return Response({"error": "Técnico no encontrado"}, status=status.HTTP_404_NOT_FOUND)
             
         print("=============================================")
-        # --- FIN DE CÓDIGO DE DEPURACIÓN ---
+        # --- FIN DE DEPURACIÓN ---
         tecnico = self.get_object()
         ordenes = tecnico.get_ordenes_taller()
         serializer = OrdenDeTrabajoSerializer(ordenes, many=True)
         return Response(serializer.data)
 
 
-    @action(detail=True, methods=["get"])#, url_path="ordenes-del-taller/(?P<orden_id>[^/.]+)")
+    @action(detail=True, methods=["get"], url_path="orden/(?P<orden_id>[^/.]+)")
     def detalle_orden(self, request, pk=None, orden_id=None):
+        # --- INICIO DE DEPURACIÓN ---
+        print("\n=============================================")
+        print("--- 🚀 Dentro de detalle_orden() en la VISTA ---")
+        print(f"ID del técnico recibido (pk): {pk}")
+        print(f"ID de la orden recibido (orden_id): {orden_id}")
+        # --- FIN DE DEPURACIÓN ---
         tecnico = self.get_object()
         orden = tecnico.obtener_orden(orden_id)
         if not orden:
